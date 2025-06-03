@@ -47,18 +47,23 @@
       cloud.style.top = (rect.top + window.scrollY - 40) + "px";
 
       try {
-        const res = await fetch("https://chatgpt-42.p.rapidapi.com/ask", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          "X-RapidAPI-Key": RAPIDAPI_KEY,
-          "X-RapidAPI-Host": "chatgpt-42.p.rapidapi.com"
-        },
-        body: JSON.stringify({ query: prompt })
-      });
+        const res = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "X-RapidAPI-Key": RAPIDAPI_KEY,
+            "X-RapidAPI-Host": "chatgpt-42.p.rapidapi.com"
+          },
+          body: JSON.stringify({
+            messages: [
+              { role: "user", content: prompt }
+            ],
+            web_access: false
+          })
+        });
 
         const data = await res.json();
-        const text = data.response?.trim() || "❓ Нет ответа";
+        const text = data.result?.trim() || "❓ Нет ответа";
         cloud.textContent = "✅ Ответ: " + text;
       } catch (err) {
         cloud.textContent = "⚠️ Ошибка подключения.";
