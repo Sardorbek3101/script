@@ -1,17 +1,7 @@
-// === Клиентский AI помощник для тестов (без API ключей) ===
-
-// Конфигурация по умолчанию
-const defaultConfig = {
-  service: 'local', // 'local', 'yandexgpt', 'llama'
-  maxTokens: 150
-};
-
-// Главный класс помощника
+// === AI помощник для тестов (без API ключей) ===
 class TestAIAssistant {
-  constructor(config = {}) {
-    this.config = { ...defaultConfig, ...config };
+  constructor() {
     this.currentQuestion = null;
-    this.isLoading = false;
     this.init();
   }
 
@@ -22,7 +12,7 @@ class TestAIAssistant {
   }
 
   createUI() {
-    // Удаляем старые элементы если есть
+    // Удаляем старые элементы, если есть
     this.removeUI();
 
     // Главное окно
@@ -32,7 +22,7 @@ class TestAIAssistant {
       position: fixed;
       right: 20px;
       bottom: 20px;
-      width: 300px;
+      width: 350px;
       background: white;
       border: 1px solid #ddd;
       border-radius: 8px;
@@ -49,13 +39,11 @@ class TestAIAssistant {
       </div>
       <div id="ai-helper-content" style="padding: 10px; max-height: 300px; overflow-y: auto;"></div>
       <div style="padding: 10px; border-top: 1px solid #ddd;">
-        <select id="ai-service-select" style="width: 100%; padding: 5px; margin-bottom: 5px;">
-          <option value="local">Локальный ИИ (быстрый)</option>
-          <option value="yandexgpt">Yandex GPT (требует логин)</option>
-          <option value="llama">Llama 3 (через сервер)</option>
-        </select>
-        <button id="ai-get-answer" style="padding: 5px 10px; background: #2196F3; color: white; border: none; border-radius: 4px; margin-top: 5px; width: 100%;">
-          Получить ответ
+        <button id="ai-get-answer" style="padding: 8px 10px; background: #2196F3; color: white; border: none; border-radius: 4px; margin-top: 5px; width: 100%;">
+          Получить ответ (через ИИ)
+        </button>
+        <button id="ai-smart-search" style="padding: 8px 10px; background: #4CAF50; color: white; border: none; border-radius: 4px; margin-top: 5px; width: 100%;">
+          Найти ответ в интернете
         </button>
       </div>
     `;
@@ -71,7 +59,7 @@ class TestAIAssistant {
       bottom: 20px;
       width: 50px;
       height: 50px;
-      background: #4CAF50;
+      background: #2196F3;
       color: white;
       border-radius: 50%;
       display: flex;
@@ -102,14 +90,14 @@ class TestAIAssistant {
       this.answerWindow.style.display = 'none';
     });
     
-    // Изменение сервиса
-    document.getElementById('ai-service-select').addEventListener('change', (e) => {
-      this.config.service = e.target.value;
-    });
-    
-    // Получение ответа
+    // Получение ответа через ИИ (если доступен WebView API)
     document.getElementById('ai-get-answer').addEventListener('click', () => {
       this.getAIAnswer(this.currentQuestion);
+    });
+
+    // Умный поиск в интернете (если нет доступа к ИИ)
+    document.getElementById('ai-smart-search').addEventListener('click', () => {
+      this.smartSearchAnswer(this.currentQuestion);
     });
     
     // Автоматическое обнаружение вопросов
@@ -143,134 +131,50 @@ class TestAIAssistant {
       this.showMessage('Сначала выберите вопрос', 'error');
       return;
     }
-    
-    if (this.isLoading) {
-      this.showMessage('Уже идет запрос...', 'warning');
+
+    this.showMessage("Ищу ответ через ИИ...", 'info');
+
+    // Попробуем использовать WebView API (если доступно)
+    if (window.hasOwnProperty('webkit') && window.webkit.messageHandlers) {
+      try {
+        window.webkit.messageHandlers.getAIAnswer.postMessage(question);
+        this.showMessage("Запрос отправлен в WebView. Ждем ответа...", 'info');
+      } catch (e) {
+        this.showMessage("Ошибка WebView: " + e.message, 'error');
+      }
       return;
     }
-    
-    this.isLoading = true;
-    this.showMessage(`Запрашиваю ответ (${this.config.service})...`, 'info');
-    
-    try {
-      let answer;
-      
-      switch(this.config.service) {
-        case 'local':
-          answer = await this.getLocalAnswer(question);
-          break;
-        case 'yandexgpt':
-          answer = await this.getYandexGPTAnswer(question);
-          break;
-        case 'llama':
-          answer = await this.getLlamaAnswer(question);
-          break;
-        default:
-          answer = await this.getLocalAnswer(question);
-      }
-      
-      if (answer) {
-        this.showMessage(`Ответ на вопрос "${question}":\n\n${answer}`, 'success');
-      } else {
-        this.showMessage('Не получилось получить ответ', 'error');
-      }
-    } catch (error) {
-      this.showMessage(`Ошибка запроса: ${error.message}`, 'error');
-    } finally {
-      this.isLoading = false;
-    }
+
+    // Если WebView недоступен, попробуем Smart Search
+    this.smartSearchAnswer(question);
   }
 
-  // Локальный "ИИ" - простые ответы на популярные вопросы
-  async getLocalAnswer(question) {
-    // Имитация задержки сети
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Простая база знаний
-    const knowledgeBase = {
-      "что такое html": "HTML (HyperText Markup Language) - это язык разметки для создания веб-страниц.",
-      "что такое css": "CSS (Cascading Style Sheets) - это язык стилей для оформления HTML-документов.",
-      "что такое javascript": "JavaScript - это язык программирования для создания интерактивных веб-страниц.",
-      "как создать функцию в javascript": "Функция в JavaScript создается так: function myFunction(param) { ... }",
-      "как изменить цвет фона в css": "Используйте свойство background-color: например, background-color: red;",
-      "что такое api": "API (Application Programming Interface) - это набор методов для взаимодействия между программами.",
-      "как добавить элемент в массив": "В JavaScript: array.push(element) - добавит элемент в конец массива.",
-      "что такое react": "React - это JavaScript-библиотека для создания пользовательских интерфейсов.",
-      "как создать компонент в react": "В React компонент можно создать как функцию: function MyComponent() { return ... }",
-      "что такое git": "Git - это система контроля версий для отслеживания изменений в коде."
-    };
-    
-    const lowerQuestion = question.toLowerCase();
-    
-    // Ищем точный или похожий вопрос
-    for (const [q, a] of Object.entries(knowledgeBase)) {
-      if (lowerQuestion.includes(q) || q.includes(lowerQuestion)) {
-        return a;
-      }
+  async smartSearchAnswer(question) {
+    if (!question) {
+      this.showMessage('Сначала выберите вопрос', 'error');
+      return;
     }
-    
-    // Если вопрос не найден, возвращаем общий ответ
-    return "К сожалению, у меня нет точного ответа на этот вопрос. Попробуйте использовать Yandex GPT или Llama для более сложных вопросов.";
-  }
 
-  // Используем Yandex GPT (требует авторизации в Яндексе)
-  async getYandexGPTAnswer(question) {
-    try {
-      // Открываем новое окно с Yandex GPT
-      const yandexUrl = `https://300.ya.ru/api/sharing-url`;
-      const response = await fetch(`https://cors-anywhere.herokuapp.com/${yandexUrl}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Origin': window.location.origin
-        },
-        body: JSON.stringify({
-          article_url: "",
-          text: question
-        })
-      });
-      
-      const data = await response.json();
-      
-      if (data.sharing_url) {
-        window.open(data.sharing_url, '_blank');
-        return "Открыл Yandex GPT в новом окне. Авторизуйтесь и получите ответ там.";
-      } else {
-        throw new Error("Не удалось получить ссылку на Yandex GPT");
-      }
-    } catch (error) {
-      // Если не работает через API, просто открываем страницу Yandex GPT
-      window.open('https://yandex.ru/gpt/', '_blank');
-      return "Открыл Yandex GPT в новом окне. Введите вопрос там вручную.";
-    }
-  }
+    this.showMessage("Ищу ответ в интернете...", 'info');
 
-  // Используем Llama 3 через бесплатный прокси
-  async getLlamaAnswer(question) {
     try {
-      const response = await fetch('https://cors-anywhere.herokuapp.com/https://api.llama.ai/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Origin': window.location.origin
-        },
-        body: JSON.stringify({
-          prompt: question,
-          max_tokens: this.config.maxTokens
-        })
-      });
+      // Используем Google Custom Search или аналоги (если доступно)
+      const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(question)}`;
       
-      const data = await response.json();
-      return data.choices?.[0]?.text || "Не получилось получить ответ от Llama";
-    } catch (error) {
-      // Альтернатива - открыть веб-интерфейс Llama
-      window.open('https://llama.ai/', '_blank');
-      return "Открыл Llama в новом окне. Введите вопрос там вручную.";
+      // В идеале - использовать fetch + прокси, но это требует бекенда
+      // Вместо этого покажем ссылку
+      this.showMessage(
+        `🔍 Ответ не найден в локальной базе.\n\n` +
+        `Попробуйте поискать вручную: ` +
+        `<a href="${searchUrl}" target="_blank" style="color: #2196F3;">открыть поиск Google</a>`,
+        'warning'
+      );
+    } catch (e) {
+      this.showMessage("Ошибка поиска: " + e.message, 'error');
     }
   }
 
   adaptToSite() {
-    // Даем время для загрузки страницы
     setTimeout(() => {
       const questions = document.querySelectorAll('.test-question, .question-text, [class*="question"], .q-text');
       
@@ -280,23 +184,18 @@ class TestAIAssistant {
         
         q.addEventListener('click', () => {
           this.currentQuestion = q.innerText.trim();
-          this.showMessage('Вопрос сохранен. Нажмите "Получить ответ"', 'info');
+          this.showMessage(`Вопрос выбран: "${this.currentQuestion}"`, 'success');
         });
       });
       
       if (questions.length > 0) {
-        this.showMessage(`Найдено ${questions.length} вопросов. Кликните по вопросу чтобы выбрать его.`, 'info');
+        this.showMessage(`Найдено ${questions.length} вопросов. Кликните по вопросу, чтобы выбрать его.`, 'info');
       } else {
-        this.showMessage('Вопросы не найдены автоматически. Скопируйте вопрос вручную.', 'warning');
+        this.showMessage('Вопросы не найдены автоматически. Выделите текст вопроса вручную.', 'warning');
       }
     }, 1000);
   }
 }
 
-// Экспортируем функцию для создания помощника
-export function createAIAssistant(config = {}) {
-  return new TestAIAssistant(config);
-}
-
-// Автоматическая инициализация при импорте
-createAIAssistant();
+// Автоматическая инициализация
+new TestAIAssistant();
