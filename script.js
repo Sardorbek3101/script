@@ -30,21 +30,33 @@
         cloud.id = "ai-answer-cloud";
         cloud.style = `
           position: absolute;
-          background: #fff;
-          padding: 6px 10px;
-          border-radius: 8px;
-          font-size: 14px;
-          color: #000;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+          background: rgba(255, 255, 255, 0.85);
+          padding: 4px 8px;
+          border-radius: 6px;
+          font-size: 12px;
+          color: #222;
+          font-family: sans-serif;
+          pointer-events: none;
           z-index: 9999;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+          transition: opacity 0.3s ease;
         `;
         document.body.appendChild(cloud);
       }
 
+      cloud.style.opacity = "1";
       cloud.textContent = "⏳ Думаю...";
-      const rect = questionEl.getBoundingClientRect();
-      cloud.style.left = (rect.left + window.scrollX + 20) + "px";
-      cloud.style.top = (rect.top + window.scrollY - 40) + "px";
+
+      // 🧭 Позиционируем рядом с мышкой
+      cloud.style.left = (e.pageX + 10) + "px";
+      cloud.style.top = (e.pageY - 30) + "px";
+
+      // 🧼 Автоудаление через 3 сек
+      clearTimeout(cloud.hideTimeout);
+      cloud.hideTimeout = setTimeout(() => {
+        cloud.style.opacity = "0";
+        setTimeout(() => cloud.remove(), 300); // удалить после плавного исчезновения
+      }, 3000);
 
       try {
         const res = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
