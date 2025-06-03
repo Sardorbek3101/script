@@ -1,4 +1,4 @@
-var imbase = 'http://localhost:5500'; // production
+var imbase = 'https://script-tggi.onrender.com/'; // production
 var imbase_l = imbase+'/game';
 //var imbase = 'http://localhost';
 //var imbase_l = imbase+'/examcheat';
