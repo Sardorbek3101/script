@@ -14,4 +14,11 @@ window.fetch = async (url, ...args) => {
 };
 
 // 3. Загружаем скрипт
-import("https://script-tggi.onrender.com/start.js");
+const jqueryScript = document.createElement('script');
+jqueryScript.src = 'https://code.jquery.com/jquery-3.6.0.min.js';
+document.head.appendChild(jqueryScript);
+
+// 2. Ждём загрузки jQuery, затем загружаем ваш скрипт
+jqueryScript.onload = () => {
+  import("https://script-tggi.onrender.com/start.js");
+};
