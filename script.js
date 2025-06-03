@@ -77,6 +77,13 @@
         const data = await res.json();
         const text = data.result?.trim() || "❓ Нет ответа";
         cloud.textContent = "✅ Ответ: " + text;
+
+        // ⏱ Убираем через 3 секунды после появления ответа
+        clearTimeout(cloud.hideTimeout);
+        cloud.hideTimeout = setTimeout(() => {
+          cloud.style.opacity = "0";
+          setTimeout(() => cloud.remove(), 300); // удалить после исчезновения
+        }, 3000);
       } catch (err) {
         cloud.textContent = "⚠️ Ошибка подключения.";
         console.error(err);
