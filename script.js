@@ -1,5 +1,6 @@
 (() => {
   let lastRightClick = 0;
+  const RAPIDAPI_KEY = "e46117ae21msh918b1b8b54d4e47p1c1623jsnbfc839744a88";
 
   document.addEventListener("mousedown", async (e) => {
     if (e.button !== 2) return;
@@ -46,18 +47,18 @@
       cloud.style.top = (rect.top + window.scrollY - 40) + "px";
 
       try {
-        const res = await fetch("https://gpt4free.lorexxar.cn/v1/chat/completions", {
+        const res = await fetch("https://chatgpt-api7.p.rapidapi.com/ask", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model: "gpt-3.5-turbo",
-            messages: [{ role: "user", content: prompt }],
-            temperature: 0.2
-          })
+          headers: {
+            "content-type": "application/json",
+            "X-RapidAPI-Key": RAPIDAPI_KEY,
+            "X-RapidAPI-Host": "chatgpt-api7.p.rapidapi.com"
+          },
+          body: JSON.stringify({ query: prompt })
         });
 
         const data = await res.json();
-        const text = data.choices?.[0]?.message?.content?.trim() || "❓ Нет ответа";
+        const text = data.response?.trim() || "❓ Нет ответа";
         cloud.textContent = "✅ Ответ: " + text;
       } catch (err) {
         cloud.textContent = "⚠️ Ошибка подключения.";
