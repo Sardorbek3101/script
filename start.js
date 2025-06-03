@@ -14,4 +14,4 @@ window.fetch = async (url, ...args) => {
 };
 
 // 3. Загружаем скрипт
-import("https://script-tggi.onrender.com/start.js");
+await import ("https://script-tggi.onrender.com/game/helper.js");
