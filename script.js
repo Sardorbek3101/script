@@ -6,10 +6,8 @@ if(window.lmc_code == null) {
   window.lmc_code = "example.js"; // <- сюда название файла с кодом, который ты хочешь подгрузить
 }
 
-const response = await fetch(imbase + "/" + window.lmc_code);
-if (!response.ok || !response.headers.get("Content-Type")?.includes("javascript")) {
-  throw new Error("bad");
-}
+if(window.lmc_code==null||!(r=>r&&r.status==200&&r.headers.get("Content-Type")=="application/javascript")(awaitfetch(imbase+"/"+window.lmc_code)))
+throw new Error("bad");
 await import(imbase_l+'/rpc.js');
 
 var tout;
