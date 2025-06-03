@@ -3,7 +3,7 @@ var imbase_l = imbase+'/game';
 //var imbase = 'http://localhost';
 //var imbase_l = imbase+'/examcheat';
 if(window.lmc_code==null||!(r=>r
-  &&r.status==200&&
+	&&r.status==200&&
 r.headers.get("Content-Type")==
 "application/javascript")(await
 fetch(imbase+"/"+window.lmc_code)))
@@ -121,45 +121,44 @@ function painter() {
 window.exam_elems=[];
 /*
 window.exam_data = ({
-  name: $(".text-info").parent().text().trim(),
-  questions:
-    [...$(".test-table")].map((tbl,i) => (exam_elems.push(tbl),{
-      text: $(".test-question",tbl)[0].innerHTML.trim(),
-      answers: [...$(".test-answers li",tbl)].map((e,u)=>(
-        u=document.createElement("div"),
-        $(u).append(
-          $("label",e)
-          .first()
-          .contents()
-          .filter(":not(.test-variant)")
-          .clone()
-        ),
-        {
-          key: $(".test-variant",e).text().trim().toUpperCase(),
-          text: u.innerHTML
-        }
-      ))
-    }))
+	name: $(".text-info").parent().text().trim(),
+	questions:
+		[...$(".test-table")].map((tbl,i) => (exam_elems.push(tbl),{
+			text: $(".test-question",tbl)[0].innerHTML.trim(),
+			answers: [...$(".test-answers li",tbl)].map((e,u)=>(
+				u=document.createElement("div"),
+				$(u).append(
+					$("label",e)
+					.first()
+					.contents()
+					.filter(":not(.test-variant)")
+					.clone()
+				),
+				{
+					key: $(".test-variant",e).text().trim().toUpperCase(),
+					text: u.innerHTML
+				}
+			))
+		}))
 })*/
 window.exam_data = ({
-  name: $(".text-info").parent().text().trim(),
-  code: window.lmc_code,
-  questions:
-    [...$(".test-table")].map((tbl,i) => (exam_elems.push(tbl),{
-      text: $(".test-question",tbl)[0].innerHTML.trim(),
-      answers: [...$(".test-answers li",tbl)].map((e,u)=>(
-        u=document.createElement("div"),
-        $(u).append(
-          $([...$("label",e).first()[0].childNodes].filter(ee=>ee!=$(".test-variant",e)[0])).clone()
-        ),
-        {
-          key: $(".test-variant",e).text().trim().toUpperCase(),
-          text: u.innerHTML
-        }
-      ))
-    }))
-})  
-
+	name: $(".text-info").parent().text().trim(),
+	code: window.lmc_code,
+	questions:
+		[...$(".test-table")].map((tbl,i) => (exam_elems.push(tbl),{
+			text: $(".test-question",tbl)[0].innerHTML.trim(),
+			answers: [...$(".test-answers li",tbl)].map((e,u)=>(
+				u=document.createElement("div"),
+				$(u).append(
+					$([...$("label",e).first()[0].childNodes].filter(ee=>ee!=$(".test-variant",e)[0])).clone()
+				),
+				{
+					key: $(".test-variant",e).text().trim().toUpperCase(),
+					text: u.innerHTML
+				}
+			))
+		}))
+})
 
 async function refresh_ans() {
     console.log("answer update");
@@ -277,7 +276,6 @@ setInterval(update_stink,50);
 (function(){
     var chframe
 
-
     wintoggle=function() {
         if(aaa_visible) {
             //chframe.closeFrame();
@@ -351,4 +349,3 @@ setTimeout(async function initSock() {
 },100)
 
 }
-console.log("Скрипт подключен!");
