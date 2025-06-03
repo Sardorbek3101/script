@@ -1,12 +1,12 @@
 (() => {
   let lastRightClick = 0;
-  const DEEPSEEK_API_KEY = "sk-593a1d21663a4c628251b13ff7310db9"; // 🔑 Вставь свой DeepSeek API ключ сюда
 
   document.addEventListener("mousedown", async (e) => {
     if (e.button !== 2) return;
+
     const now = Date.now();
     if (now - lastRightClick < 400) {
-      const active = document.querySelector(".test-table.active");
+      const active = document.querySelector(".test-table.active.in");
       if (!active) return;
 
       const questionEl = active.querySelector(".test-question");
@@ -29,11 +29,10 @@
         cloud.id = "ai-answer-cloud";
         cloud.style = `
           position: absolute;
-          background: rgba(255, 255, 255, 0.95);
+          background: #fff;
           padding: 6px 10px;
           border-radius: 8px;
           font-size: 14px;
-          font-weight: bold;
           color: #000;
           box-shadow: 0 2px 6px rgba(0,0,0,0.2);
           z-index: 9999;
@@ -47,27 +46,25 @@
       cloud.style.top = (rect.top + window.scrollY - 40) + "px";
 
       try {
-        const res = await fetch("https://api.deepseek.com/v1/chat/completions", {
+        const res = await fetch("https://api.binjie.fun/api/generateStream", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${DEEPSEEK_API_KEY}`
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: "deepseek-chat", // или "deepseek-coder" для кода
             messages: [{ role: "user", content: prompt }],
-            temperature: 0.2
+            model: "gpt-3.5-turbo",
+            stream: false
           })
         });
 
         const data = await res.json();
         const text = data.choices?.[0]?.message?.content?.trim() || "❓ Нет ответа";
-        cloud.textContent = "✅ Ответ: " + text;
+        cloud.textContent = "💡 Ответ: " + text;
       } catch (err) {
-        cloud.textContent = "⚠️ Ошибка запроса.";
+        cloud.textContent = "⚠️ Ошибка подключения.";
         console.error(err);
       }
     }
+
     lastRightClick = now;
   });
 })();
