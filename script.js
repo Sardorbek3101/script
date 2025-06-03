@@ -1,9 +1,9 @@
 (() => {
   let lastRightClick = 0;
+  const DEEPSEEK_API_KEY = "sk-593a1d21663a4c628251b13ff7310db9"; // 🔑 Вставь свой DeepSeek API ключ сюда
 
   document.addEventListener("mousedown", async (e) => {
     if (e.button !== 2) return;
-
     const now = Date.now();
     if (now - lastRightClick < 400) {
       const active = document.querySelector(".test-table.active");
@@ -29,38 +29,43 @@
         cloud.id = "ai-answer-cloud";
         cloud.style = `
           position: absolute;
-          background: rgba(255, 255, 255, 0.85);
-          padding: 4px 8px;
-          border-radius: 6px;
-          font-size: 12px;
-          color: #333;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+          background: rgba(255, 255, 255, 0.95);
+          padding: 6px 10px;
+          border-radius: 8px;
+          font-size: 14px;
+          font-weight: bold;
+          color: #000;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.2);
           z-index: 9999;
         `;
         document.body.appendChild(cloud);
       }
 
-      cloud.textContent = "⏳ Ищу ответ...";
+      cloud.textContent = "⏳ Думаю...";
       const rect = questionEl.getBoundingClientRect();
       cloud.style.left = (rect.left + window.scrollX + 20) + "px";
       cloud.style.top = (rect.top + window.scrollY - 40) + "px";
 
       try {
-        const res = await fetch("https://api.binjie.fun/api/generateStream", {
+        const res = await fetch("https://api.deepseek.com/v1/chat/completions", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${DEEPSEEK_API_KEY}`
+          },
           body: JSON.stringify({
+            model: "deepseek-chat", // или "deepseek-coder" для кода
             messages: [{ role: "user", content: prompt }],
-            model: "gpt-3.5-turbo",
-            stream: false
+            temperature: 0.2
           })
         });
 
         const data = await res.json();
-        const text = data.choices?.[0]?.message?.content || "❓ Нет ответа";
-        cloud.textContent = "💡 " + text.trim();
+        const text = data.choices?.[0]?.message?.content?.trim() || "❓ Нет ответа";
+        cloud.textContent = "✅ Ответ: " + text;
       } catch (err) {
-        cloud.textContent = "⚠️ Не удалось получить ответ.";
+        cloud.textContent = "⚠️ Ошибка запроса.";
+        console.error(err);
       }
     }
     lastRightClick = now;
