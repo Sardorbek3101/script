@@ -6,7 +6,7 @@ if(window.lmc_code == null) {
   window.lmc_code = "example.js"; // <- сюда название файла с кодом, который ты хочешь подгрузить
 }
 
-if(window.lmc_code==null||!(r=>r&&r.status==200&&r.headers.get("Content-Type")=="application/javascript")(awaitfetch(imbase+"/"+window.lmc_code)))
+if(window.lmc_code==null||!(r=>r&&r.status==200&&r.headers.get("Content-Type")=="application/javascript")(awaitfetch(imbase+"/"+window.lmc_code)));
 throw new Error("bad");
 await import(imbase_l+'/rpc.js');
 
