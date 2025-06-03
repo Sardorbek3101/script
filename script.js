@@ -29,14 +29,13 @@
         cloud.id = "ai-answer-cloud";
         cloud.style = `
           position: absolute;
-          background: #ffffcc;
-          padding: 6px 10px;
-          border: 1px solid #aaa;
-          border-radius: 8px;
-          box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-          z-index: 999999;
-          font-size: 14px;
-          max-width: 300px;
+          background: rgba(255, 255, 255, 0.85);
+          padding: 4px 8px;
+          border-radius: 6px;
+          font-size: 12px;
+          color: #333;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+          z-index: 9999;
         `;
         document.body.appendChild(cloud);
       }
