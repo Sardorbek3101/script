@@ -47,15 +47,15 @@
       cloud.style.top = (rect.top + window.scrollY - 40) + "px";
 
       try {
-        const res = await fetch("https://chatgpt-api7.p.rapidapi.com/ask", {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            "X-RapidAPI-Key": RAPIDAPI_KEY,
-            "X-RapidAPI-Host": "chatgpt-api7.p.rapidapi.com"
-          },
-          body: JSON.stringify({ query: prompt })
-        });
+        const res = await fetch("https://chatgpt-42.p.rapidapi.com/ask", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "X-RapidAPI-Key": RAPIDAPI_KEY,
+          "X-RapidAPI-Host": "chatgpt-42.p.rapidapi.com"
+        },
+        body: JSON.stringify({ query: prompt })
+      });
 
         const data = await res.json();
         const text = data.response?.trim() || "❓ Нет ответа";
