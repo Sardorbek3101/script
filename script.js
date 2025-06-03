@@ -46,19 +46,19 @@
       cloud.style.top = (rect.top + window.scrollY - 40) + "px";
 
       try {
-        const res = await fetch("https://api.binjie.fun/api/generateStream", {
+        const res = await fetch("https://gpt4free.lorexxar.cn/v1/chat/completions", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            messages: [{ role: "user", content: prompt }],
             model: "gpt-3.5-turbo",
-            stream: false
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.2
           })
         });
 
         const data = await res.json();
         const text = data.choices?.[0]?.message?.content?.trim() || "❓ Нет ответа";
-        cloud.textContent = "💡 Ответ: " + text;
+        cloud.textContent = "✅ Ответ: " + text;
       } catch (err) {
         cloud.textContent = "⚠️ Ошибка подключения.";
         console.error(err);
