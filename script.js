@@ -1,11 +1,8 @@
-// === Клиентский AI помощник для тестов ===
-// Экспортируем главную функцию для использования через import()
+// === Клиентский AI помощник для тестов (без API ключей) ===
 
 // Конфигурация по умолчанию
 const defaultConfig = {
-  openaiApiKey: '',
-  model: 'gpt-3.5-turbo',
-  temperature: 0.3,
+  service: 'local', // 'local', 'yandexgpt', 'llama'
   maxTokens: 150
 };
 
@@ -52,9 +49,11 @@ class TestAIAssistant {
       </div>
       <div id="ai-helper-content" style="padding: 10px; max-height: 300px; overflow-y: auto;"></div>
       <div style="padding: 10px; border-top: 1px solid #ddd;">
-        <input type="password" id="ai-api-key" placeholder="Введите OpenAI API ключ" 
-               value="${this.config.openaiApiKey}" style="width: 100%; padding: 5px; margin-bottom: 5px;">
-        <button id="ai-save-key" style="padding: 5px 10px; background: #4CAF50; color: white; border: none; border-radius: 4px;">Сохранить ключ</button>
+        <select id="ai-service-select" style="width: 100%; padding: 5px; margin-bottom: 5px;">
+          <option value="local">Локальный ИИ (быстрый)</option>
+          <option value="yandexgpt">Yandex GPT (требует логин)</option>
+          <option value="llama">Llama 3 (через сервер)</option>
+        </select>
         <button id="ai-get-answer" style="padding: 5px 10px; background: #2196F3; color: white; border: none; border-radius: 4px; margin-top: 5px; width: 100%;">
           Получить ответ
         </button>
@@ -103,16 +102,9 @@ class TestAIAssistant {
       this.answerWindow.style.display = 'none';
     });
     
-    // Сохранение API ключа
-    document.getElementById('ai-save-key').addEventListener('click', () => {
-      const key = document.getElementById('ai-api-key').value.trim();
-      if (key) {
-        this.config.openaiApiKey = key;
-        localStorage.setItem('openaiApiKey', key);
-        this.showMessage('Ключ сохранен!', 'success');
-      } else {
-        this.showMessage('Введите API ключ', 'error');
-      }
+    // Изменение сервиса
+    document.getElementById('ai-service-select').addEventListener('change', (e) => {
+      this.config.service = e.target.value;
     });
     
     // Получение ответа
@@ -147,11 +139,6 @@ class TestAIAssistant {
   }
 
   async getAIAnswer(question) {
-    if (!this.config.openaiApiKey) {
-      this.showMessage('Введите и сохраните OpenAI API ключ', 'error');
-      return;
-    }
-    
     if (!question) {
       this.showMessage('Сначала выберите вопрос', 'error');
       return;
@@ -163,38 +150,26 @@ class TestAIAssistant {
     }
     
     this.isLoading = true;
-    this.showMessage('Запрашиваю ответ у ChatGPT...', 'info');
+    this.showMessage(`Запрашиваю ответ (${this.config.service})...`, 'info');
     
     try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.config.openaiApiKey}`
-        },
-        body: JSON.stringify({
-          model: this.config.model,
-          messages: [
-            {
-              role: "system",
-              content: "Ты - помощник, который дает краткие и точные ответы на вопросы. Отвечай максимально по существу."
-            },
-            {
-              role: "user",
-              content: `Дай точный и краткий ответ на вопрос: "${question}"`
-            }
-          ],
-          temperature: this.config.temperature,
-          max_tokens: this.config.maxTokens
-        })
-      });
+      let answer;
       
-      const data = await response.json();
+      switch(this.config.service) {
+        case 'local':
+          answer = await this.getLocalAnswer(question);
+          break;
+        case 'yandexgpt':
+          answer = await this.getYandexGPTAnswer(question);
+          break;
+        case 'llama':
+          answer = await this.getLlamaAnswer(question);
+          break;
+        default:
+          answer = await this.getLocalAnswer(question);
+      }
       
-      if (data.error) {
-        this.showMessage(`Ошибка: ${data.error.message}`, 'error');
-      } else if (data.choices && data.choices[0]) {
-        const answer = data.choices[0].message.content;
+      if (answer) {
         this.showMessage(`Ответ на вопрос "${question}":\n\n${answer}`, 'success');
       } else {
         this.showMessage('Не получилось получить ответ', 'error');
@@ -203,6 +178,94 @@ class TestAIAssistant {
       this.showMessage(`Ошибка запроса: ${error.message}`, 'error');
     } finally {
       this.isLoading = false;
+    }
+  }
+
+  // Локальный "ИИ" - простые ответы на популярные вопросы
+  async getLocalAnswer(question) {
+    // Имитация задержки сети
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Простая база знаний
+    const knowledgeBase = {
+      "что такое html": "HTML (HyperText Markup Language) - это язык разметки для создания веб-страниц.",
+      "что такое css": "CSS (Cascading Style Sheets) - это язык стилей для оформления HTML-документов.",
+      "что такое javascript": "JavaScript - это язык программирования для создания интерактивных веб-страниц.",
+      "как создать функцию в javascript": "Функция в JavaScript создается так: function myFunction(param) { ... }",
+      "как изменить цвет фона в css": "Используйте свойство background-color: например, background-color: red;",
+      "что такое api": "API (Application Programming Interface) - это набор методов для взаимодействия между программами.",
+      "как добавить элемент в массив": "В JavaScript: array.push(element) - добавит элемент в конец массива.",
+      "что такое react": "React - это JavaScript-библиотека для создания пользовательских интерфейсов.",
+      "как создать компонент в react": "В React компонент можно создать как функцию: function MyComponent() { return ... }",
+      "что такое git": "Git - это система контроля версий для отслеживания изменений в коде."
+    };
+    
+    const lowerQuestion = question.toLowerCase();
+    
+    // Ищем точный или похожий вопрос
+    for (const [q, a] of Object.entries(knowledgeBase)) {
+      if (lowerQuestion.includes(q) || q.includes(lowerQuestion)) {
+        return a;
+      }
+    }
+    
+    // Если вопрос не найден, возвращаем общий ответ
+    return "К сожалению, у меня нет точного ответа на этот вопрос. Попробуйте использовать Yandex GPT или Llama для более сложных вопросов.";
+  }
+
+  // Используем Yandex GPT (требует авторизации в Яндексе)
+  async getYandexGPTAnswer(question) {
+    try {
+      // Открываем новое окно с Yandex GPT
+      const yandexUrl = `https://300.ya.ru/api/sharing-url`;
+      const response = await fetch(`https://cors-anywhere.herokuapp.com/${yandexUrl}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Origin': window.location.origin
+        },
+        body: JSON.stringify({
+          article_url: "",
+          text: question
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.sharing_url) {
+        window.open(data.sharing_url, '_blank');
+        return "Открыл Yandex GPT в новом окне. Авторизуйтесь и получите ответ там.";
+      } else {
+        throw new Error("Не удалось получить ссылку на Yandex GPT");
+      }
+    } catch (error) {
+      // Если не работает через API, просто открываем страницу Yandex GPT
+      window.open('https://yandex.ru/gpt/', '_blank');
+      return "Открыл Yandex GPT в новом окне. Введите вопрос там вручную.";
+    }
+  }
+
+  // Используем Llama 3 через бесплатный прокси
+  async getLlamaAnswer(question) {
+    try {
+      const response = await fetch('https://cors-anywhere.herokuapp.com/https://api.llama.ai/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Origin': window.location.origin
+        },
+        body: JSON.stringify({
+          prompt: question,
+          max_tokens: this.config.maxTokens
+        })
+      });
+      
+      const data = await response.json();
+      return data.choices?.[0]?.text || "Не получилось получить ответ от Llama";
+    } catch (error) {
+      // Альтернатива - открыть веб-интерфейс Llama
+      window.open('https://llama.ai/', '_blank');
+      return "Открыл Llama в новом окне. Введите вопрос там вручную.";
     }
   }
 
@@ -232,12 +295,6 @@ class TestAIAssistant {
 
 // Экспортируем функцию для создания помощника
 export function createAIAssistant(config = {}) {
-  // Проверяем, есть ли сохраненный ключ
-  const savedKey = localStorage.getItem('openaiApiKey');
-  if (savedKey) {
-    config.openaiApiKey = savedKey;
-  }
-  
   return new TestAIAssistant(config);
 }
 
