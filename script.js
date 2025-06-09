@@ -2,6 +2,7 @@
   let lastRightClick = 0;
   const RAPIDAPI_KEY = "e46117ae21msh918b1b8b54d4e47p1c1623jsnbfc839744a88";
 
+  // Показываем "success" при движении мыши
   document.addEventListener("mousemove", function showSuccessOnce(e) {
     document.removeEventListener("mousemove", showSuccessOnce);
 
@@ -45,18 +46,22 @@
         const answerCandidates = [...texts].filter(t => t.innerText?.length > 1 && t.innerText.match(/^[A-ZА-Я]\)?\s+/));
 
         if (questionCandidates.length > 0 && answerCandidates.length >= 2) {
-          // Удаляем дубликаты в вопросе
           let questionText = questionCandidates[0].innerText.trim();
-          questionText = [...new Set(questionText.split("\n"))].join(" ").trim();
 
-          // Удаляем дубликаты в вариантах
-          const optionSet = new Set();
-          answerCandidates.forEach(a => {
-            const txt = a.innerText.trim();
-            if (txt.length > 0) optionSet.add(txt);
-          });
-          const options = [...optionSet].join("\n");
+          // Удаляем дубликаты вариантов
+          const seen = new Set();
+          const options = answerCandidates
+            .map(a => a.innerText.trim())
+            .filter(opt => {
+              if (seen.has(opt)) return false;
+              seen.add(opt);
+              return true;
+            })
+            .join("\n");
+
           const prompt = `Выбери правильный ответ. Вопрос:\n${questionText}\nВарианты:\n${options}\nОтвет (только буква):`;
+
+          console.log("📤 PROMPT:\n" + prompt);
 
           let cloud = document.querySelector("#ai-answer-cloud");
           if (!cloud) {
@@ -83,10 +88,7 @@
           cloud.style.left = (e.pageX + 10) + "px";
           cloud.style.top = (e.pageY - 30) + "px";
 
-          // Удалим старый таймер, если был
-          if (cloud.hideTimeout) {
-            clearTimeout(cloud.hideTimeout);
-          }
+          if (cloud.hideTimeout) clearTimeout(cloud.hideTimeout);
 
           try {
             const res = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
@@ -109,8 +111,6 @@
 
             const data = await res.json();
             const rawText = data.result?.trim() || "Нет ответа";
-
-            // Извлекаем только первую подходящую букву ответа
             const match = rawText.match(/\b[ABCDАБВГ]\b/i);
             const answerLetter = match ? match[0].toUpperCase() : "Нет ответа";
 
@@ -134,51 +134,42 @@
 
     lastRightClick = now;
   });
-})();
 
-// === Подсветка элемента под курсором, включается по Ctrl + Q ===
+  // === Подсветка элемента под курсором, включается по Ctrl + Q ===
+  let highlightEnabled = false;
+  let lastHovered = null;
 
-let highlightEnabled = false;
-let lastHovered = null;
-
-function enableHighlight() {
-  document.addEventListener("mousemove", onMouseMove);
-}
-
-function disableHighlight() {
-  document.removeEventListener("mousemove", onMouseMove);
-  if (lastHovered) {
-    lastHovered.style.outline = "";
-    lastHovered = null;
+  function enableHighlight() {
+    document.addEventListener("mousemove", onMouseMove);
   }
-}
 
-function onMouseMove(e) {
-  const el = document.elementFromPoint(e.clientX, e.clientY);
-
-  if (el && el !== lastHovered) {
+  function disableHighlight() {
+    document.removeEventListener("mousemove", onMouseMove);
     if (lastHovered) {
       lastHovered.style.outline = "";
-    }
-
-    if (el.tagName !== "HTML" && el.tagName !== "BODY") {
-      el.style.outline = "2px solid rgba(0, 150, 255, 0.15)";
-      el.style.outlineOffset = "-2px";
-      lastHovered = el;
+      lastHovered = null;
     }
   }
-}
 
-document.addEventListener("keydown", (e) => {
-  if (e.ctrlKey && e.key.toLowerCase() === "q") {
-    highlightEnabled = !highlightEnabled;
+  function onMouseMove(e) {
+    const el = document.elementFromPoint(e.clientX, e.clientY);
 
-    if (highlightEnabled) {
-      enableHighlight();
-      console.log("Подсветка ВКЛ");
-    } else {
-      disableHighlight();
-      console.log("Подсветка ВЫКЛ");
+    if (el && el !== lastHovered) {
+      if (lastHovered) lastHovered.style.outline = "";
+
+      if (el.tagName !== "HTML" && el.tagName !== "BODY") {
+        el.style.outline = "2px solid rgba(0, 150, 255, 0.15)";
+        el.style.outlineOffset = "-2px";
+        lastHovered = el;
+      }
     }
   }
-});
+
+  document.addEventListener("keydown", (e) => {
+    if (e.ctrlKey && e.key.toLowerCase() === "q") {
+      highlightEnabled = !highlightEnabled;
+      highlightEnabled ? enableHighlight() : disableHighlight();
+      console.log("Подсветка " + (highlightEnabled ? "ВКЛ" : "ВЫКЛ"));
+    }
+  });
+})();
