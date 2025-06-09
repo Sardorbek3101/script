@@ -128,56 +128,49 @@
   });
 })();
 
-(() => {
-  let lastHoveredElement = null;
-  let highlightEnabled = false;
+// === Подсветка элемента под курсором, включается по Ctrl + Q ===
 
-  const highlightStyle = "2px solid rgba(0, 150, 255, 0.2)";
-  const highlightOffset = "-2px";
+let highlightEnabled = false;
+let lastHovered = null;
 
-  // Подсветка элемента под курсором, если включено
-  document.addEventListener("mousemove", (e) => {
-    if (!highlightEnabled) return;
+function enableHighlight() {
+  document.addEventListener("mousemove", onMouseMove);
+}
 
-    const el = document.elementFromPoint(e.clientX, e.clientY);
+function disableHighlight() {
+  document.removeEventListener("mousemove", onMouseMove);
+  if (lastHovered) {
+    lastHovered.style.outline = "";
+    lastHovered = null;
+  }
+}
 
-    if (el && el !== lastHoveredElement) {
-      if (lastHoveredElement) {
-        lastHoveredElement.style.outline = "";
-        lastHoveredElement.style.outlineOffset = "";
-      }
+function onMouseMove(e) {
+  const el = document.elementFromPoint(e.clientX, e.clientY);
 
-      if (el.tagName !== "HTML" && el.tagName !== "BODY") {
-        el.style.outline = highlightStyle;
-        el.style.outlineOffset = highlightOffset;
-        lastHoveredElement = el;
-      }
+  if (el && el !== lastHovered) {
+    if (lastHovered) {
+      lastHovered.style.outline = "";
     }
-  });
 
-  // Убираем подсветку при выходе курсора за пределы окна
-  document.addEventListener("mouseout", () => {
-    if (lastHoveredElement) {
-      lastHoveredElement.style.outline = "";
-      lastHoveredElement.style.outlineOffset = "";
-      lastHoveredElement = null;
+    if (el.tagName !== "HTML" && el.tagName !== "BODY") {
+      el.style.outline = "2px solid rgba(0, 150, 255, 0.15)";
+      el.style.outlineOffset = "-2px";
+      lastHovered = el;
     }
-  });
+  }
+}
 
-  // Горячая клавиша: Ctrl + Tab переключает режим
-  document.addEventListener("keydown", (e) => {
-    if (e.ctrlKey && e.key === "Tab") {
-      e.preventDefault(); // предотвращаем переключение вкладки
-      highlightEnabled = !highlightEnabled;
+document.addEventListener("keydown", (e) => {
+  if (e.ctrlKey && e.key.toLowerCase() === "q") {
+    highlightEnabled = !highlightEnabled;
 
-      if (!highlightEnabled && lastHoveredElement) {
-        lastHoveredElement.style.outline = "";
-        lastHoveredElement.style.outlineOffset = "";
-        lastHoveredElement = null;
-      }
-
-      console.log("Подсветка: " + (highlightEnabled ? "включена" : "выключена"));
+    if (highlightEnabled) {
+      enableHighlight();
+      console.log("Подсветка ВКЛ");
+    } else {
+      disableHighlight();
+      console.log("Подсветка ВЫКЛ");
     }
-  });
-})();
-
+  }
+});
