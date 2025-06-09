@@ -42,13 +42,19 @@
       while (el && el !== document.body) {
         const texts = el.querySelectorAll("p, span, div, li");
         const questionCandidates = [...texts].filter(t => t.innerText?.length > 20 && !t.innerText.includes("\n"));
-        const answerCandidates = [...texts].filter(t => t.innerText?.length > 1 && t.innerText.match(/^[A-ZА-Я]\)?\s+/));
 
-        if (questionCandidates.length > 0 && answerCandidates.length >= 2) {
+        const rawAnswers = [...texts]
+          .map(t => t.innerText.trim())
+          .filter(t => t.length > 1 && /^[A-ZА-Я]\)?\s+/.test(t));
+
+        const uniqueAnswers = [...new Set(rawAnswers)];
+
+        if (questionCandidates.length > 0 && uniqueAnswers.length >= 2) {
           const questionText = questionCandidates[0].innerText.trim();
-          const options = answerCandidates.map((a) => a.innerText.trim()).join("\n");
+          const options = uniqueAnswers.join("\n");
 
           const prompt = `Выбери правильный ответ. Вопрос:\n${questionText}\nВарианты:\n${options}\nОтвет (только буква):`;
+          console.log("📤 PROMPT:", prompt);
 
           let cloud = document.querySelector("#ai-answer-cloud");
           if (!cloud) {
