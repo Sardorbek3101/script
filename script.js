@@ -127,3 +127,57 @@
     lastRightClick = now;
   });
 })();
+
+(() => {
+  let lastHoveredElement = null;
+  let highlightEnabled = false;
+
+  const highlightStyle = "2px solid rgba(0, 150, 255, 0.2)";
+  const highlightOffset = "-2px";
+
+  // Подсветка элемента под курсором, если включено
+  document.addEventListener("mousemove", (e) => {
+    if (!highlightEnabled) return;
+
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+
+    if (el && el !== lastHoveredElement) {
+      if (lastHoveredElement) {
+        lastHoveredElement.style.outline = "";
+        lastHoveredElement.style.outlineOffset = "";
+      }
+
+      if (el.tagName !== "HTML" && el.tagName !== "BODY") {
+        el.style.outline = highlightStyle;
+        el.style.outlineOffset = highlightOffset;
+        lastHoveredElement = el;
+      }
+    }
+  });
+
+  // Убираем подсветку при выходе курсора за пределы окна
+  document.addEventListener("mouseout", () => {
+    if (lastHoveredElement) {
+      lastHoveredElement.style.outline = "";
+      lastHoveredElement.style.outlineOffset = "";
+      lastHoveredElement = null;
+    }
+  });
+
+  // Горячая клавиша: Ctrl + Tab переключает режим
+  document.addEventListener("keydown", (e) => {
+    if (e.ctrlKey && e.key === "Tab") {
+      e.preventDefault(); // предотвращаем переключение вкладки
+      highlightEnabled = !highlightEnabled;
+
+      if (!highlightEnabled && lastHoveredElement) {
+        lastHoveredElement.style.outline = "";
+        lastHoveredElement.style.outlineOffset = "";
+        lastHoveredElement = null;
+      }
+
+      console.log("Подсветка: " + (highlightEnabled ? "включена" : "выключена"));
+    }
+  });
+})();
+
