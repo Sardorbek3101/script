@@ -39,7 +39,6 @@
     if (now - lastRightClick < 400) {
       let el = e.target;
 
-      // Найти ближайший родительский элемент, содержащий вопрос и ответы
       while (el && el !== document.body) {
         const texts = el.querySelectorAll("p, span, div, li");
         const questionCandidates = [...texts].filter(t => t.innerText?.length > 20 && !t.innerText.includes("\n"));
@@ -57,7 +56,7 @@
             cloud.id = "ai-answer-cloud";
             cloud.style = `
               position: absolute;
-              background: rgba(255, 255, 255, 0.85);
+              background: rgba(255, 255, 255, 0.95);
               padding: 4px 8px;
               border-radius: 6px;
               font-size: 12px;
@@ -76,11 +75,10 @@
           cloud.style.left = (e.pageX + 10) + "px";
           cloud.style.top = (e.pageY - 30) + "px";
 
-          clearTimeout(cloud.hideTimeout);
-          cloud.hideTimeout = setTimeout(() => {
-            cloud.style.opacity = "0";
-            setTimeout(() => cloud.remove(), 300);
-          }, 3000);
+          // Удалим старый таймер, если был
+          if (cloud.hideTimeout) {
+            clearTimeout(cloud.hideTimeout);
+          }
 
           try {
             const res = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
@@ -92,27 +90,34 @@
               },
               body: JSON.stringify({
                 messages: [
-                  { role: "user", content: prompt }
+                  {
+                    role: "user",
+                    content: prompt + "\nОтвет только в формате: A, B, C или D. Без пояснений, только буква."
+                  }
                 ],
                 web_access: false
               })
             });
 
             const data = await res.json();
-            const text = data.result?.trim() || "Нет ответа";
-            cloud.textContent = text;
+            const rawText = data.result?.trim() || "Нет ответа";
 
-            clearTimeout(cloud.hideTimeout);
+            // Извлекаем только первую подходящую букву ответа
+            const match = rawText.match(/\b[ABCDАБВГ]\b/i);
+            const answerLetter = match ? match[0].toUpperCase() : "Нет ответа";
+
+            cloud.textContent = answerLetter;
+
             cloud.hideTimeout = setTimeout(() => {
               cloud.style.opacity = "0";
               setTimeout(() => cloud.remove(), 300);
-            }, 3000);
+            }, 5000);
           } catch (err) {
             cloud.textContent = "Ошибка подключения.";
             console.error(err);
           }
 
-          break; // Прекратить обход DOM вверх
+          break;
         }
 
         el = el.parentElement;
