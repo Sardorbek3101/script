@@ -42,19 +42,21 @@
       while (el && el !== document.body) {
         const texts = el.querySelectorAll("p, span, div, li");
         const questionCandidates = [...texts].filter(t => t.innerText?.length > 20 && !t.innerText.includes("\n"));
+        const answerCandidates = [...texts].filter(t => t.innerText?.length > 1 && t.innerText.match(/^[A-ZА-Я]\)?\s+/));
 
-        const rawAnswers = [...texts]
-          .map(t => t.innerText.trim())
-          .filter(t => t.length > 1 && /^[A-ZА-Я]\)?\s+/.test(t));
+        if (questionCandidates.length > 0 && answerCandidates.length >= 2) {
+          // Удаляем дубликаты в вопросе
+          let questionText = questionCandidates[0].innerText.trim();
+          questionText = [...new Set(questionText.split("\n"))].join(" ").trim();
 
-        const uniqueAnswers = [...new Set(rawAnswers)];
-
-        if (questionCandidates.length > 0 && uniqueAnswers.length >= 2) {
-          const questionText = questionCandidates[0].innerText.trim();
-          const options = uniqueAnswers.join("\n");
-
+          // Удаляем дубликаты в вариантах
+          const optionSet = new Set();
+          answerCandidates.forEach(a => {
+            const txt = a.innerText.trim();
+            if (txt.length > 0) optionSet.add(txt);
+          });
+          const options = [...optionSet].join("\n");
           const prompt = `Выбери правильный ответ. Вопрос:\n${questionText}\nВарианты:\n${options}\nОтвет (только буква):`;
-          console.log("📤 PROMPT:", prompt);
 
           let cloud = document.querySelector("#ai-answer-cloud");
           if (!cloud) {
