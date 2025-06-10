@@ -2,11 +2,11 @@
   let lastRightClick = 0;
   const RAPIDAPI_KEY = "e46117ae21msh918b1b8b54d4e47p1c1623jsnbfc839744a88";
 
+  // Показать "success" при первом движении мыши
   document.addEventListener("mousemove", function showSuccessOnce(e) {
     document.removeEventListener("mousemove", showSuccessOnce);
 
     const cloud = document.createElement("div");
-    cloud.id = "script-loaded-cloud";
     cloud.textContent = "success";
     cloud.style = `
       position: absolute;
@@ -23,7 +23,6 @@
     `;
     cloud.style.left = (e.pageX + 10) + "px";
     cloud.style.top = (e.pageY - 30) + "px";
-
     document.body.appendChild(cloud);
 
     setTimeout(() => {
@@ -32,6 +31,7 @@
     }, 3000);
   });
 
+  // Обработка двойного ПКМ
   document.addEventListener("mousedown", async (e) => {
     if (e.button !== 2) return;
 
@@ -40,29 +40,18 @@
       let el = e.target;
 
       while (el && el !== document.body) {
-        const classSelector = [...el.classList].map(cls => `.${CSS.escape(cls)}`).join('');
-        const tagSelector = el.tagName.toLowerCase() + classSelector;
+        // Получаем все вложенные текстовые элементы
+        const texts = el.querySelectorAll("p, span, div, li");
 
-        let texts = [];
-
-        if (!classSelector) {
-          texts = el.querySelectorAll("p, span, div, li");
-        } else {
-          const exactEl = document.querySelector(tagSelector);
-          if (exactEl === el) {
-            texts = el.querySelectorAll("p, span, div, li");
-          } else {
-            console.log("⚠️ Селектор не совпал с исходным элементом — пропуск.");
-            el = el.parentElement;
-            continue;
-          }
-        }
-
-        const questionCandidates = [...texts].filter(t => t.innerText?.length > 20 && !t.innerText.includes("\n"));
-        const answerCandidates = [...texts].filter(t => t.innerText?.length > 1 && t.innerText.match(/^[A-ZА-Я]\)?\s+/));
+        const questionCandidates = [...texts].filter(t =>
+          t.innerText?.length > 20 && !t.innerText.includes("\n")
+        );
+        const answerCandidates = [...texts].filter(t =>
+          t.innerText?.length > 1 && /^[A-ZА-Я]\)?\s+/.test(t.innerText)
+        );
 
         if (questionCandidates.length > 0 && answerCandidates.length >= 2) {
-          let questionText = questionCandidates[0].innerText.trim();
+          const questionText = questionCandidates[0].innerText.trim();
 
           const seen = new Set();
           const options = answerCandidates
@@ -102,7 +91,6 @@
           cloud.textContent = "Думаю...";
           cloud.style.left = (e.pageX + 10) + "px";
           cloud.style.top = (e.pageY - 30) + "px";
-
           if (cloud.hideTimeout) clearTimeout(cloud.hideTimeout);
 
           try {
@@ -114,12 +102,10 @@
                 "X-RapidAPI-Host": "chatgpt-42.p.rapidapi.com"
               },
               body: JSON.stringify({
-                messages: [
-                  {
-                    role: "user",
-                    content: prompt + "\nОтвет только в формате: A, B, C или D. Без пояснений, только буква."
-                  }
-                ],
+                messages: [{
+                  role: "user",
+                  content: prompt + "\nОтвет только в формате: A, B, C или D. Без пояснений, только буква."
+                }],
                 web_access: false
               })
             });
@@ -140,7 +126,7 @@
             console.error(err);
           }
 
-          break;
+          break; // найден подходящий контейнер, выход
         }
 
         el = el.parentElement;
@@ -150,7 +136,7 @@
     lastRightClick = now;
   });
 
-  // === Подсветка элемента под курсором (Ctrl + Q) ===
+  // Подсветка (Ctrl+Q)
   let highlightEnabled = false;
   let lastHovered = null;
 
@@ -168,10 +154,8 @@
 
   function onMouseMove(e) {
     const el = document.elementFromPoint(e.clientX, e.clientY);
-
     if (el && el !== lastHovered) {
       if (lastHovered) lastHovered.style.outline = "";
-
       if (el.tagName !== "HTML" && el.tagName !== "BODY") {
         el.style.outline = "2px solid rgba(0, 150, 255, 0.15)";
         el.style.outlineOffset = "-2px";
