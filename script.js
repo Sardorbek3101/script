@@ -34,7 +34,8 @@
   });
 
   document.addEventListener("mousedown", async (e) => {
-  if (e.button !== 2) return;
+  if (!highlightEnabled || e.button !== 0) return;
+
 
   const now = Date.now();
   if (now - lastRightClick < 400) {
