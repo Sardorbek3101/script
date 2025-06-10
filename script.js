@@ -139,7 +139,7 @@
         cloud.hideTimeout = setTimeout(() => {
           cloud.style.opacity = "0";
           setTimeout(() => cloud.remove(), 300);
-        }, 5000);
+        }, 3000);
       } catch (err) {
         cloud.textContent = "Ошибка подключения.";
         console.error(err);
@@ -203,6 +203,12 @@
       highlightEnabled ? enableHighlight() : disableHighlight();
       console.log("Подсветка (мышь): " + (highlightEnabled ? "ВКЛ" : "ВЫКЛ"));
       clickSequence = [];
+    }
+  });
+    document.addEventListener("keydown", (e) => {
+    if (e.ctrlKey && e.key.toLowerCase() === "z") {
+      console.log("🔁 Ctrl + Z: Перезагрузка страницы");
+      location.reload();
     }
   });
 })();
