@@ -1,17 +1,6 @@
 (() => {
   let lastRightClick = 0;
-  document.addEventListener("contextmenu", e => {
-    e.preventDefault();               // Отключает стандартное меню
-    e.stopImmediatePropagation();     // Блокирует перехват события другими скриптами
-  }, true);
-
-  document.addEventListener("mousedown", e => {
-    e.stopImmediatePropagation();     // Блокируем попытки сайта перехватить клик
-  }, true);
-
-  document.addEventListener("mouseup", e => {
-    e.stopImmediatePropagation();     // Блокируем попытки сайта перехватить клик
-  }, true);
+  const RAPIDAPI_KEY = "e46117ae21msh918b1b8b54d4e47p1c1623jsnbfc839744a88";
 
   // Показываем "success" при движении мыши
   document.addEventListener("mousemove", function showSuccessOnce(e) {
