@@ -2,11 +2,12 @@
   let lastRightClick = 0;
   const RAPIDAPI_KEY = "e46117ae21msh918b1b8b54d4e47p1c1623jsnbfc839744a88";
 
-  // Показать "success" при первом движении мыши
+  // Показываем "success" при движении мыши
   document.addEventListener("mousemove", function showSuccessOnce(e) {
     document.removeEventListener("mousemove", showSuccessOnce);
 
     const cloud = document.createElement("div");
+    cloud.id = "script-loaded-cloud";
     cloud.textContent = "success";
     cloud.style = `
       position: absolute;
@@ -23,6 +24,7 @@
     `;
     cloud.style.left = (e.pageX + 10) + "px";
     cloud.style.top = (e.pageY - 30) + "px";
+
     document.body.appendChild(cloud);
 
     setTimeout(() => {
@@ -39,21 +41,14 @@
       let el = e.target;
 
       while (el && el !== document.body) {
-        const children = Array.from(el.children);
-
-        const questionCandidates = children.filter(t =>
-          t.innerText?.length > 20 &&
-          !t.innerText.includes("\n") &&
-          t.innerText.trim().endsWith("?")
-        );
-
-        const answerCandidates = children.filter(t =>
-          /^[A-ZА-Я]\)?\s+/.test(t.innerText.trim())
-        );
+        const texts = el.querySelectorAll("p, span, div, li");
+        const questionCandidates = [...texts].filter(t => t.innerText?.length > 20 && !t.innerText.includes("\n"));
+        const answerCandidates = [...texts].filter(t => t.innerText?.length > 1 && t.innerText.match(/^[A-ZА-Я]\)?\s+/));
 
         if (questionCandidates.length > 0 && answerCandidates.length >= 2) {
-          const questionText = questionCandidates[0].innerText.trim();
+          let questionText = questionCandidates[0].innerText.trim();
 
+          // Удаляем дубликаты вариантов
           const seen = new Set();
           const options = answerCandidates
             .map(a => a.innerText.trim())
@@ -92,6 +87,7 @@
           cloud.textContent = "Думаю...";
           cloud.style.left = (e.pageX + 10) + "px";
           cloud.style.top = (e.pageY - 30) + "px";
+
           if (cloud.hideTimeout) clearTimeout(cloud.hideTimeout);
 
           try {
@@ -103,10 +99,12 @@
                 "X-RapidAPI-Host": "chatgpt-42.p.rapidapi.com"
               },
               body: JSON.stringify({
-                messages: [{
-                  role: "user",
-                  content: prompt + "\nОтвет только в формате: A, B, C или D. Без пояснений, только буква."
-                }],
+                messages: [
+                  {
+                    role: "user",
+                    content: prompt + "\nОтвет только в формате: A, B, C или D. Без пояснений, только буква."
+                  }
+                ],
                 web_access: false
               })
             });
@@ -127,7 +125,7 @@
             console.error(err);
           }
 
-          break; // выходим — нужный контейнер обработан
+          break;
         }
 
         el = el.parentElement;
@@ -137,7 +135,7 @@
     lastRightClick = now;
   });
 
-  // Подсветка элемента под курсором (Ctrl+Q)
+  // === Подсветка элемента под курсором, включается по Ctrl + Q ===
   let highlightEnabled = false;
   let lastHovered = null;
 
@@ -155,8 +153,10 @@
 
   function onMouseMove(e) {
     const el = document.elementFromPoint(e.clientX, e.clientY);
+
     if (el && el !== lastHovered) {
       if (lastHovered) lastHovered.style.outline = "";
+
       if (el.tagName !== "HTML" && el.tagName !== "BODY") {
         el.style.outline = "2px solid rgba(0, 150, 255, 0.15)";
         el.style.outlineOffset = "-2px";
