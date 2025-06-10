@@ -34,121 +34,114 @@
   });
 
   document.addEventListener("mousedown", async (e) => {
-  if (e.button !== 2) return;
+    if (e.button !== 2) return;
 
-  const now = Date.now();
-  if (now - lastRightClick < 400) {
-    const el = e.target;
-    let selector = [...el.classList].map(cls => `.${cls}`).join("");
+    const now = Date.now();
+    if (now - lastRightClick < 400) {
+      const el = e.target;
 
-    console.log("📌 Селектор по классам:", selector);
+      // Собираем текстовые узлы только изнутри элемента
+      const rawTexts = Array.from(el.querySelectorAll("*"))
+        .flatMap(child => Array.from(child.childNodes))
+        .filter(node => node.nodeType === Node.TEXT_NODE)
+        .map(node => node.textContent.trim())
+        .filter(text => text.length > 1);
 
-    let texts;
-    if (selector.length > 0) {
-      // Пробуем точный селектор
-      try {
-        texts = el.querySelectorAll(`${selector} p, ${selector} span, ${selector} div, ${selector} li`);
-        if (texts.length === 0) throw new Error("Ничего не найдено по селектору");
-      } catch {
-        // Фолбэк
-        texts = el.querySelectorAll("p, span, div, li");
-        console.warn("⚠️ Переход к фолбэку без классов");
-      }
-    } else {
-      texts = el.querySelectorAll("p, span, div, li");
-    }
+      const uniqueTexts = [...new Set(rawTexts)];
 
- const questionCandidates = [...texts].filter(t => t.innerText?.replace(/\s+/g, " ").trim().length > 20);
+      const questionCandidates = uniqueTexts.filter(t => t.length > 20 && !t.includes("\n"));
+      let questionText = questionCandidates[0] || "";
 
+      const optionLines = uniqueTexts.filter(t => {
+        const matches = t.match(/\b[A-ZА-Я]\s+\S+/g);
+        return matches && matches.length === 1;
+      });
 
-    const answerCandidates = [...texts].filter(t =>
-      t.innerText?.match(/^[A-ZА-Я]\)?\s+/)
-    );
-
-    if (questionCandidates.length > 0 && answerCandidates.length >= 2) {
-      const questionText = questionCandidates[0].innerText.trim();
-
-      const seen = new Set();
-      const options = answerCandidates
-        .map(a => a.innerText.trim())
+      const seenLetters = new Set();
+      const options = optionLines
         .filter(opt => {
-          if (seen.has(opt)) return false;
-          seen.add(opt);
-          return true;
+          const letter = opt[0].toUpperCase();
+          if (seenLetters.has(letter)) return false;
+          seenLetters.add(letter);
+          return /^[A-ZА-Я]\s+\S+/i.test(opt);
         })
         .join("\n");
 
-      const prompt = `Выбери правильный ответ. Вопрос:\n${questionText}\nВарианты:\n${options}\nОтвет (только буква):`;
+      if (questionText && options.split("\n").length >= 2) {
+        const prompt = `Выбери правильный ответ. Вопрос:\n${questionText}\nВарианты:\n${options}\nОтвет (только буква):`;
+         console.log("🧩 Найденные элементы:");
+        console.log("🔹 Вопросы:", questionCandidates.map(e => e.innerText.trim()));
+        console.log("🔹 Ответы:", answerCandidates.map(e => e.innerText.trim()));
 
-      let cloud = document.querySelector("#ai-answer-cloud");
-      if (!cloud) {
-        cloud = document.createElement("div");
-        cloud.id = "ai-answer-cloud";
-        cloud.style = `
-          position: absolute;
-          background: rgba(255, 255, 255, 0.95);
-          padding: 4px 8px;
-          border-radius: 6px;
-          font-size: 12px;
-          color: #222;
-          font-family: sans-serif;
-          pointer-events: none;
-          z-index: 9999;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-          transition: opacity 0.3s ease;
-        `;
-        document.body.appendChild(cloud);
+
+        let cloud = document.querySelector("#ai-answer-cloud");
+        if (!cloud) {
+          cloud = document.createElement("div");
+          cloud.id = "ai-answer-cloud";
+          cloud.style = `
+            position: absolute;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #222;
+            font-family: sans-serif;
+            pointer-events: none;
+            z-index: 9999;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: opacity 0.3s ease;
+          `;
+          document.body.appendChild(cloud);
+        }
+
+        cloud.style.opacity = "1";
+        cloud.textContent = "Думаю...";
+        cloud.style.left = (e.pageX + 10) + "px";
+        cloud.style.top = (e.pageY - 30) + "px";
+
+        if (cloud.hideTimeout) clearTimeout(cloud.hideTimeout);
+
+        try {
+          const res = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
+            method: "POST",
+            headers: {
+              "content-type": "application/json",
+              "X-RapidAPI-Key": RAPIDAPI_KEY,
+              "X-RapidAPI-Host": "chatgpt-42.p.rapidapi.com"
+            },
+            body: JSON.stringify({
+              messages: [
+                {
+                  role: "user",
+                  content: prompt + "\nОтвет только в формате: A, B, C или D. Без пояснений, только буква."
+                }
+              ],
+              web_access: false
+            })
+          });
+
+          const data = await res.json();
+          const rawText = data.result?.trim() || "Нет ответа";
+          const match = rawText.match(/\b[ABCDАБВГ]\b/i);
+          const answerLetter = match ? match[0].toUpperCase() : "Нет ответа";
+
+          cloud.textContent = answerLetter;
+
+          cloud.hideTimeout = setTimeout(() => {
+            cloud.style.opacity = "0";
+            setTimeout(() => cloud.remove(), 300);
+          }, 5000);
+        } catch (err) {
+          cloud.textContent = "Ошибка подключения.";
+          console.error(err);
+        }
+      } else {
+        console.warn("❌ Вопрос или ответы не найдены в этом элементе.");
       }
-
-      cloud.style.opacity = "1";
-      cloud.textContent = "Думаю...";
-      cloud.style.left = (e.pageX + 10) + "px";
-      cloud.style.top = (e.pageY - 30) + "px";
-
-      if (cloud.hideTimeout) clearTimeout(cloud.hideTimeout);
-
-      try {
-        const res = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            "X-RapidAPI-Key": RAPIDAPI_KEY,
-            "X-RapidAPI-Host": "chatgpt-42.p.rapidapi.com"
-          },
-          body: JSON.stringify({
-            messages: [
-              {
-                role: "user",
-                content: prompt + "\nОтвет только в формате: A, B, C или D. Без пояснений, только буква."
-              }
-            ],
-            web_access: false
-          })
-        });
-
-        const data = await res.json();
-        const rawText = data.result?.trim() || "Нет ответа";
-        const match = rawText.match(/\b[ABCDАБВГ]\b/i);
-        const answerLetter = match ? match[0].toUpperCase() : "Нет ответа";
-
-        cloud.textContent = answerLetter;
-
-        cloud.hideTimeout = setTimeout(() => {
-          cloud.style.opacity = "0";
-          setTimeout(() => cloud.remove(), 300);
-        }, 5000);
-      } catch (err) {
-        cloud.textContent = "Ошибка подключения.";
-        console.error(err);
-      }
-    } else {
-      console.warn("❌ Вопрос или ответы не найдены в этом элементе.");
     }
-  }
 
-  lastRightClick = now;
-});
-
+    lastRightClick = now;
+  });
 
   // === Подсветка элемента под курсором, включается по Ctrl + Q ===
   let highlightEnabled = false;
