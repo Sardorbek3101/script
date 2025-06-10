@@ -1,6 +1,9 @@
 (() => {
   let lastRightClick = 0;
   const RAPIDAPI_KEY = "e46117ae21msh918b1b8b54d4e47p1c1623jsnbfc839744a88";
+  document.addEventListener("contextmenu", e => e.stopImmediatePropagation(), true);
+  document.addEventListener("mousedown", e => e.stopImmediatePropagation(), true);
+  document.addEventListener("mouseup", e => e.stopImmediatePropagation(), true);
 
   // Показываем "success" при движении мыши
   document.addEventListener("mousemove", function showSuccessOnce(e) {
