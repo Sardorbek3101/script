@@ -80,6 +80,7 @@
 
       const prompt = `Выбери правильный ответ. Вопрос:\n${questionText}\nВарианты:\n${options}\nОтвет (только буква):`;
 
+
       let cloud = document.querySelector("#ai-answer-cloud");
       if (!cloud) {
         cloud = document.createElement("div");
@@ -128,6 +129,8 @@
 
         const data = await res.json();
         const rawText = data.result?.trim() || "Нет ответа";
+        console.log("📤 Prompt к ChatGPT:\n", prompt);
+        console.log("📥 Ответ ChatGPT:\n", rawText);
         const match = rawText.match(/\b[ABCDАБВГ]\b/i);
         const answerLetter = match ? match[0].toUpperCase() : "Нет ответа";
 
@@ -184,7 +187,22 @@
     if (e.ctrlKey && e.key.toLowerCase() === "q") {
       highlightEnabled = !highlightEnabled;
       highlightEnabled ? enableHighlight() : disableHighlight();
-      console.log("Подсветка " + (highlightEnabled ? "ВКЛ" : "ВЫКЛ"));
+      console.log("Подсветка (Ctrl+Q): " + (highlightEnabled ? "ВКЛ" : "ВЫКЛ"));
+    }
+  });
+
+  // Включение подсветки по клику: левая → правая → левая
+  let clickSequence = [];
+
+  document.addEventListener("mousedown", (e) => {
+    clickSequence.push(e.button); // 0 = левая, 2 = правая
+    if (clickSequence.length > 3) clickSequence.shift();
+
+    if (clickSequence.join(",") === "0,2,0") {
+      highlightEnabled = !highlightEnabled;
+      highlightEnabled ? enableHighlight() : disableHighlight();
+      console.log("Подсветка (мышь): " + (highlightEnabled ? "ВКЛ" : "ВЫКЛ"));
+      clickSequence = [];
     }
   });
 })();
