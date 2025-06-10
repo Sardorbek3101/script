@@ -2,7 +2,6 @@
   let lastRightClick = 0;
   const RAPIDAPI_KEY = "e46117ae21msh918b1b8b54d4e47p1c1623jsnbfc839744a88";
 
-  // Показываем "success" при движении мыши
   document.addEventListener("mousemove", function showSuccessOnce(e) {
     document.removeEventListener("mousemove", showSuccessOnce);
 
@@ -41,14 +40,30 @@
       let el = e.target;
 
       while (el && el !== document.body) {
-        const texts = el.querySelectorAll("p, span, div, li");
+        const classSelector = [...el.classList].map(cls => `.${CSS.escape(cls)}`).join('');
+        const tagSelector = el.tagName.toLowerCase() + classSelector;
+
+        let texts = [];
+
+        if (!classSelector) {
+          texts = el.querySelectorAll("p, span, div, li");
+        } else {
+          const exactEl = document.querySelector(tagSelector);
+          if (exactEl === el) {
+            texts = el.querySelectorAll("p, span, div, li");
+          } else {
+            console.log("⚠️ Селектор не совпал с исходным элементом — пропуск.");
+            el = el.parentElement;
+            continue;
+          }
+        }
+
         const questionCandidates = [...texts].filter(t => t.innerText?.length > 20 && !t.innerText.includes("\n"));
         const answerCandidates = [...texts].filter(t => t.innerText?.length > 1 && t.innerText.match(/^[A-ZА-Я]\)?\s+/));
 
         if (questionCandidates.length > 0 && answerCandidates.length >= 2) {
           let questionText = questionCandidates[0].innerText.trim();
 
-          // Удаляем дубликаты вариантов
           const seen = new Set();
           const options = answerCandidates
             .map(a => a.innerText.trim())
@@ -135,7 +150,7 @@
     lastRightClick = now;
   });
 
-  // === Подсветка элемента под курсором, включается по Ctrl + Q ===
+  // === Подсветка элемента под курсором (Ctrl + Q) ===
   let highlightEnabled = false;
   let lastHovered = null;
 
