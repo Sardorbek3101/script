@@ -31,7 +31,6 @@
     }, 3000);
   });
 
-  // Обработка двойного ПКМ
   document.addEventListener("mousedown", async (e) => {
     if (e.button !== 2) return;
 
@@ -40,14 +39,16 @@
       let el = e.target;
 
       while (el && el !== document.body) {
-        // Получаем все вложенные текстовые элементы
-        const texts = el.querySelectorAll("p, span, div, li");
+        const children = Array.from(el.children);
 
-        const questionCandidates = [...texts].filter(t =>
-          t.innerText?.length > 20 && !t.innerText.includes("\n")
+        const questionCandidates = children.filter(t =>
+          t.innerText?.length > 20 &&
+          !t.innerText.includes("\n") &&
+          t.innerText.trim().endsWith("?")
         );
-        const answerCandidates = [...texts].filter(t =>
-          t.innerText?.length > 1 && /^[A-ZА-Я]\)?\s+/.test(t.innerText)
+
+        const answerCandidates = children.filter(t =>
+          /^[A-ZА-Я]\)?\s+/.test(t.innerText.trim())
         );
 
         if (questionCandidates.length > 0 && answerCandidates.length >= 2) {
@@ -126,7 +127,7 @@
             console.error(err);
           }
 
-          break; // найден подходящий контейнер, выход
+          break; // выходим — нужный контейнер обработан
         }
 
         el = el.parentElement;
@@ -136,7 +137,7 @@
     lastRightClick = now;
   });
 
-  // Подсветка (Ctrl+Q)
+  // Подсветка элемента под курсором (Ctrl+Q)
   let highlightEnabled = false;
   let lastHovered = null;
 
