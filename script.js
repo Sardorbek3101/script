@@ -34,106 +34,122 @@
   });
 
   document.addEventListener("mousedown", async (e) => {
-    if (e.button !== 2) return;
+  if (e.button !== 2) return;
 
-    const now = Date.now();
-    if (now - lastRightClick < 400) {
-      let el = e.target;
+  const now = Date.now();
+  if (now - lastRightClick < 400) {
+    const el = e.target;
+    let selector = [...el.classList].map(cls => `.${cls}`).join("");
 
-      while (el && el !== document.body) {
-        const texts = el.querySelectorAll("p, span, div, li");
-        const questionCandidates = [...texts].filter(t => t.innerText?.length > 20 && !t.innerText.includes("\n"));
-        const answerCandidates = [...texts].filter(t => t.innerText?.length > 1 && t.innerText.match(/^[A-ZА-Я]\)?\s+/));
+    console.log("📌 Селектор по классам:", selector);
 
-        if (questionCandidates.length > 0 && answerCandidates.length >= 2) {
-          let questionText = questionCandidates[0].innerText.trim();
-
-          // Удаляем дубликаты вариантов
-          const seen = new Set();
-          const options = answerCandidates
-            .map(a => a.innerText.trim())
-            .filter(opt => {
-              if (seen.has(opt)) return false;
-              seen.add(opt);
-              return true;
-            })
-            .join("\n");
-
-          const prompt = `Выбери правильный ответ. Вопрос:\n${questionText}\nВарианты:\n${options}\nОтвет (только буква):`;
-
-          console.log("📤 PROMPT:\n" + prompt);
-
-          let cloud = document.querySelector("#ai-answer-cloud");
-          if (!cloud) {
-            cloud = document.createElement("div");
-            cloud.id = "ai-answer-cloud";
-            cloud.style = `
-              position: absolute;
-              background: rgba(255, 255, 255, 0.95);
-              padding: 4px 8px;
-              border-radius: 6px;
-              font-size: 12px;
-              color: #222;
-              font-family: sans-serif;
-              pointer-events: none;
-              z-index: 9999;
-              box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-              transition: opacity 0.3s ease;
-            `;
-            document.body.appendChild(cloud);
-          }
-
-          cloud.style.opacity = "1";
-          cloud.textContent = "Думаю...";
-          cloud.style.left = (e.pageX + 10) + "px";
-          cloud.style.top = (e.pageY - 30) + "px";
-
-          if (cloud.hideTimeout) clearTimeout(cloud.hideTimeout);
-
-          try {
-            const res = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
-              method: "POST",
-              headers: {
-                "content-type": "application/json",
-                "X-RapidAPI-Key": RAPIDAPI_KEY,
-                "X-RapidAPI-Host": "chatgpt-42.p.rapidapi.com"
-              },
-              body: JSON.stringify({
-                messages: [
-                  {
-                    role: "user",
-                    content: prompt + "\nОтвет только в формате: A, B, C или D. Без пояснений, только буква."
-                  }
-                ],
-                web_access: false
-              })
-            });
-
-            const data = await res.json();
-            const rawText = data.result?.trim() || "Нет ответа";
-            const match = rawText.match(/\b[ABCDАБВГ]\b/i);
-            const answerLetter = match ? match[0].toUpperCase() : "Нет ответа";
-
-            cloud.textContent = answerLetter;
-
-            cloud.hideTimeout = setTimeout(() => {
-              cloud.style.opacity = "0";
-              setTimeout(() => cloud.remove(), 300);
-            }, 5000);
-          } catch (err) {
-            cloud.textContent = "Ошибка подключения.";
-            console.error(err);
-          }
-
-          break;
-        }
-
-        el = el.parentElement;
+    let texts;
+    if (selector.length > 0) {
+      // Пробуем точный селектор
+      try {
+        texts = el.querySelectorAll(`${selector} p, ${selector} span, ${selector} div, ${selector} li`);
+        if (texts.length === 0) throw new Error("Ничего не найдено по селектору");
+      } catch {
+        // Фолбэк
+        texts = el.querySelectorAll("p, span, div, li");
+        console.warn("⚠️ Переход к фолбэку без классов");
       }
+    } else {
+      texts = el.querySelectorAll("p, span, div, li");
     }
 
-    lastRightClick = now;
-  });
+    const questionCandidates = [...texts].filter(t =>
+      t.innerText?.length > 20 && !t.innerText.includes("\n")
+    );
+
+    const answerCandidates = [...texts].filter(t =>
+      t.innerText?.match(/^[A-ZА-Я]\)?\s+/)
+    );
+
+    if (questionCandidates.length > 0 && answerCandidates.length >= 2) {
+      const questionText = questionCandidates[0].innerText.trim();
+
+      const seen = new Set();
+      const options = answerCandidates
+        .map(a => a.innerText.trim())
+        .filter(opt => {
+          if (seen.has(opt)) return false;
+          seen.add(opt);
+          return true;
+        })
+        .join("\n");
+
+      const prompt = `Выбери правильный ответ. Вопрос:\n${questionText}\nВарианты:\n${options}\nОтвет (только буква):`;
+
+      let cloud = document.querySelector("#ai-answer-cloud");
+      if (!cloud) {
+        cloud = document.createElement("div");
+        cloud.id = "ai-answer-cloud";
+        cloud.style = `
+          position: absolute;
+          background: rgba(255, 255, 255, 0.95);
+          padding: 4px 8px;
+          border-radius: 6px;
+          font-size: 12px;
+          color: #222;
+          font-family: sans-serif;
+          pointer-events: none;
+          z-index: 9999;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+          transition: opacity 0.3s ease;
+        `;
+        document.body.appendChild(cloud);
+      }
+
+      cloud.style.opacity = "1";
+      cloud.textContent = "Думаю...";
+      cloud.style.left = (e.pageX + 10) + "px";
+      cloud.style.top = (e.pageY - 30) + "px";
+
+      if (cloud.hideTimeout) clearTimeout(cloud.hideTimeout);
+
+      try {
+        const res = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "X-RapidAPI-Key": RAPIDAPI_KEY,
+            "X-RapidAPI-Host": "chatgpt-42.p.rapidapi.com"
+          },
+          body: JSON.stringify({
+            messages: [
+              {
+                role: "user",
+                content: prompt + "\nОтвет только в формате: A, B, C или D. Без пояснений, только буква."
+              }
+            ],
+            web_access: false
+          })
+        });
+
+        const data = await res.json();
+        const rawText = data.result?.trim() || "Нет ответа";
+        const match = rawText.match(/\b[ABCDАБВГ]\b/i);
+        const answerLetter = match ? match[0].toUpperCase() : "Нет ответа";
+
+        cloud.textContent = answerLetter;
+
+        cloud.hideTimeout = setTimeout(() => {
+          cloud.style.opacity = "0";
+          setTimeout(() => cloud.remove(), 300);
+        }, 5000);
+      } catch (err) {
+        cloud.textContent = "Ошибка подключения.";
+        console.error(err);
+      }
+    } else {
+      console.warn("❌ Вопрос или ответы не найдены в этом элементе.");
+    }
+  }
+
+  lastRightClick = now;
+});
+
 
   // === Подсветка элемента под курсором, включается по Ctrl + Q ===
   let highlightEnabled = false;
