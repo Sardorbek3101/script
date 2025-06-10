@@ -58,9 +58,8 @@
       texts = el.querySelectorAll("p, span, div, li");
     }
 
-    const questionCandidates = [...texts].filter(t =>
-      t.innerText?.length > 20 && !t.innerText.includes("\n")
-    );
+ const questionCandidates = [...texts].filter(t => t.innerText?.replace(/\s+/g, " ").trim().length > 20);
+
 
     const answerCandidates = [...texts].filter(t =>
       t.innerText?.match(/^[A-ZА-Я]\)?\s+/)
