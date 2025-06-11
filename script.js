@@ -193,11 +193,22 @@
   });
 
   // Включение подсветки по клику: левая → правая → левая
-  let clickSequence = [];
+let clickSequence = [];
+let lastClickTime = 0;
+const sequenceTimeout = 1500; // 1.5 секунды
 
-  document.addEventListener("mousedown", (e) => {
+document.addEventListener("mousedown", (e) => {
+  const currentTime = Date.now();
+
+  // Если прошло больше 1.5 секунды с последнего клика — сбросить последовательность
+  if (currentTime - lastClickTime > sequenceTimeout) {
+    clickSequence = [];
+  }
+
   clickSequence.push(e.button); // 0 = левая, 2 = правая
   if (clickSequence.length > 3) clickSequence.shift();
+
+  lastClickTime = currentTime;
 
   const sequenceStr = clickSequence.join(",");
 
@@ -208,6 +219,7 @@
     clickSequence = [];
   }
 });
+
 
     document.addEventListener("keydown", (e) => {
     if (e.ctrlKey && e.key.toLowerCase() === "z") {
