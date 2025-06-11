@@ -195,17 +195,20 @@
   let clickSequence = [];
 
   document.addEventListener("mousedown", (e) => {
-    clickSequence.push(e.button); // 0 = левая, 2 = правая
-    if (clickSequence.length > 3) clickSequence.shift();
+  clickSequence.push(e.button); // 0 = левая, 2 = правая
+  if (clickSequence.length > 3) clickSequence.shift();
 
-    if (clickSequence.join(",") === "0,2,0") {
-      highlightEnabled = !highlightEnabled;
-      highlightEnabled ? enableHighlight() : disableHighlight();
-      console.log("Подсветка (мышь): " + (highlightEnabled ? "ВКЛ" : "ВЫКЛ"));
-      clickSequence = [];
-    }
-  });
-    document.addEventListener("keydown", (e) => {
+  const sequenceStr = clickSequence.join(",");
+
+  if (sequenceStr === "0,2,0" || sequenceStr === "0,0,0") {
+    highlightEnabled = !highlightEnabled;
+    highlightEnabled ? enableHighlight() : disableHighlight();
+    console.log("Подсветка (мышь): " + (highlightEnabled ? "ВКЛ" : "ВЫКЛ"));
+    clickSequence = [];
+  }
+});
+
+  document.addEventListener("keydown", (e) => {
     if (e.ctrlKey && e.key.toLowerCase() === "z") {
       console.log("🔁 Ctrl + Z: Перезагрузка страницы");
       location.reload();
