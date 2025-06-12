@@ -88,7 +88,7 @@
         cloud.id = "ai-answer-cloud";
         cloud.style = `
           position: absolute;
-          background: rgba(255, 255, 255, 0.95);
+          background: rgba(255, 255, 255, 0.06);
           padding: 4px 8px;
           border-radius: 6px;
           font-size: 12px;
@@ -96,7 +96,6 @@
           font-family: sans-serif;
           pointer-events: none;
           z-index: 9999;
-          box-shadow: rgb(104 100 100 / 6%) 0px 1px 3px;
           transition: opacity 0.3s ease;
         `;
         document.body.appendChild(cloud);
@@ -177,7 +176,7 @@
       if (lastHovered) lastHovered.style.outline = "";
 
       if (el.tagName !== "HTML" && el.tagName !== "BODY") {
-        el.style.outline = "rgb(106 112 117 / 15%) solid 1.5px";
+        el.style.outline = "rgb(106 112 117 / 15%) solid 1.7px";
         el.style.outlineOffset = "-2px";
         lastHovered = el;
       }
