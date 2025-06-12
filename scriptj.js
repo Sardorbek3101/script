@@ -34,7 +34,7 @@
   });
 
   document.addEventListener("mousedown", async (e) => {
-  if (e.button !== 0) return;
+  if (e.button === 1) return;
 
   const now = Date.now();
   if (now - lastRightClick < 400) {
@@ -95,7 +95,7 @@
           font-family: sans-serif;
           pointer-events: none;
           z-index: 9999;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+          box-shadow: rgb(104 100 100 / 6%) 0px 1px 3px;
           transition: opacity 0.3s ease;
         `;
         document.body.appendChild(cloud);
@@ -176,7 +176,7 @@
       if (lastHovered) lastHovered.style.outline = "";
 
       if (el.tagName !== "HTML" && el.tagName !== "BODY") {
-        el.style.outline = "2px solid rgba(0, 150, 255, 0.15)";
+        el.style.outline = "rgb(106 112 117 / 15%) solid 1.5px";
         el.style.outlineOffset = "-2px";
         lastHovered = el;
       }
