@@ -109,7 +109,8 @@
       if (cloud.hideTimeout) clearTimeout(cloud.hideTimeout);
 
       try {
-        const res = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
+        // Первый запрос — расчёт
+        const fullRes = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
           method: "POST",
           headers: {
             "content-type": "application/json",
@@ -120,18 +121,44 @@
             messages: [
               {
                 role: "user",
-                content: prompt + "\nОтвет только в формате: A, B, C или D. Без пояснений, только буква."
+                content: `Реши задачу по формуле. Вопрос:\n${questionText}\nВарианты:\n${options}`
               }
             ],
             web_access: false
           })
         });
 
-        const data = await res.json();
-        const rawText = data.result?.trim() || "Нет ответа";
-        console.log("📤 Prompt к ChatGPT:\n", prompt);
-        console.log("📥 Ответ ChatGPT:\n", rawText);
-        const match = rawText.match(/\b[ABCDАБВГ]\b/i);
+        const fullData = await fullRes.json();
+        const fullAnswer = fullData.result?.trim() || "";
+
+        // Второй запрос — извлечение буквы
+        const shortRes = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "X-RapidAPI-Key": RAPIDAPI_KEY,
+            "X-RapidAPI-Host": "chatgpt-42.p.rapidapi.com"
+          },
+          body: JSON.stringify({
+            messages: [
+              {
+                role: "system",
+                content: fullAnswer
+              },
+              {
+                role: "user",
+                content: "На основе решения выше: только буква правильного варианта: A, B, C или D."
+              }
+            ],
+            web_access: false
+          })
+        });
+
+        const shortData = await shortRes.json();
+        const rawText = shortData.result?.trim() || "Нет ответа";
+
+        console.log("📥 Ответ модели (буква):\n", rawText);
+        const match = rawText.match(/^[ABCD]/i);
         const answerLetter = match ? match[0].toUpperCase() : "Нет ответа";
 
         cloud.textContent = answerLetter;
