@@ -102,7 +102,7 @@
       }
 
       cloud.style.opacity = "1";
-      cloud.textContent = "Думаю...";
+      cloud.textContent = "...";
       cloud.style.left = (e.pageX + 10) + "px";
       cloud.style.top = (e.pageY - 30) + "px";
 
