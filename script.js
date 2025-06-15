@@ -2,6 +2,40 @@
   let lastRightClick = 0;
   const RAPIDAPI_KEY = "e46117ae21msh918b1b8b54d4e47p1c1623jsnbfc839744a88";
 
+  // OCR-функция
+  async function recognizeImageText(img) {
+    if (!window.Tesseract) {
+      await import("https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js");
+    }
+
+    const loadImage = (src) =>
+      new Promise((resolve, reject) => {
+        const image = new Image();
+        image.crossOrigin = "anonymous";
+        image.onload = () => resolve(image);
+        image.onerror = reject;
+        image.src = src;
+      });
+
+    try {
+      const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(img.src);
+      const image = await loadImage(proxyUrl);
+      const canvas = document.createElement("canvas");
+      canvas.width = image.naturalWidth;
+      canvas.height = image.naturalHeight;
+      canvas.getContext("2d").drawImage(image, 0, 0);
+
+      const result = await Tesseract.recognize(canvas, "eng", {
+        logger: (m) => console.log("📈 OCR:", m.status, m.progress),
+      });
+
+      return result.data.text.trim();
+    } catch (err) {
+      console.error("❌ Ошибка OCR:", err);
+      return "";
+    }
+  }
+
   // Показываем "success" при движении мыши
   document.addEventListener("mousemove", function showSuccessOnce(e) {
     document.removeEventListener("mousemove", showSuccessOnce);
@@ -40,7 +74,6 @@
     if (now - lastRightClick < 400) {
       const el = e.target;
       let selector = [...el.classList].map(cls => `.${cls}`).join("");
-
       console.log("📌 Селектор по классам:", selector);
 
       let texts;
@@ -56,63 +89,32 @@
         texts = el.querySelectorAll("p, span, div, li");
       }
 
-      // === OCR-функция ===
-      if (!window.Tesseract) {
-        await import("https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js");
-      }
-
-      async function recognizeImageText(img) {
-        try {
-          const result = await Tesseract.recognize(img.src, "eng", {
-            logger: m => console.log("📈 OCR:", m.status, m.progress)
-          });
-          return result.data.text.trim();
-        } catch (err) {
-          console.error("❌ Ошибка OCR:", err);
-          return "";
-        }
-      }
-
-      // === Получение текста вопроса ===
       let questionCandidates = [...texts].filter(t => t.innerText?.replace(/\s+/g, " ").trim().length > 20);
+      let answerCandidates = [...texts].filter(t => t.innerText?.match(/^[A-ZА-Я]\)?\s+/));
 
+      // 🔄 Попытка извлечь текст из изображений, если вопроса нет
       if (questionCandidates.length === 0) {
-        const imgInBox = el.querySelector("img");
-        if (imgInBox) {
-          const recognized = await recognizeImageText(imgInBox);
-          if (recognized.length > 10) {
-            const pseudoParagraph = document.createElement("p");
-            pseudoParagraph.innerText = recognized;
-            questionCandidates = [pseudoParagraph];
+        const img = el.querySelector("img");
+        if (img) {
+          const imgText = await recognizeImageText(img);
+          if (imgText.length > 0) {
+            questionCandidates = [{ innerText: imgText }];
           }
         }
       }
 
-      // === Получение вариантов ответа, включая OCR ===
-      const rawAnswers = await Promise.all(
-        [...texts].map(async (t) => {
-          const raw = t.innerText?.trim() || "";
-          if (raw.match(/^[A-ZА-Я]\)?\s+/)) return t;
-
-          const imgs = t.querySelectorAll("img");
-          if (imgs.length > 0) {
-            let combinedText = "";
-            for (const img of imgs) {
-              const ocrText = await recognizeImageText(img);
-              combinedText += " " + ocrText;
-            }
-            if (combinedText.match(/^[A-ZА-Я]\)?\s+/)) {
-              const clone = t.cloneNode(true);
-              clone.innerText = combinedText.trim();
-              return clone;
+      // 🔄 Если есть варианты, но они пустые — попытка извлечь из изображений внутри них
+      if (answerCandidates.length > 0) {
+        for (const a of answerCandidates) {
+          if (!a.innerText.trim()) {
+            const img = a.querySelector("img");
+            if (img) {
+              const text = await recognizeImageText(img);
+              if (text) a.innerText = text;
             }
           }
-
-          return null;
-        })
-      );
-
-      const answerCandidates = rawAnswers.filter(Boolean);
+        }
+      }
 
       if (questionCandidates.length > 0 && answerCandidates.length >= 2) {
         const questionText = questionCandidates[0].innerText.trim();
@@ -212,7 +214,7 @@
     lastRightClick = now;
   });
 
-  // === Подсветка элемента под курсором, включается по Ctrl + Q ===
+  // Подсветка
   let highlightEnabled = false;
   let lastHovered = null;
 
@@ -250,14 +252,12 @@
     }
   });
 
-  // Включение подсветки по клику: левая → правая → левая
   let clickSequence = [];
   let lastClickTime = 0;
   const sequenceTimeout = 1500;
 
   document.addEventListener("mousedown", (e) => {
     const currentTime = Date.now();
-
     if (currentTime - lastClickTime > sequenceTimeout) {
       clickSequence = [];
     }
