@@ -94,19 +94,34 @@
         }
       }
 
-      const imgs = el.querySelectorAll("img");
-      for (const img of imgs) {
-        const prev = img.previousSibling;
-        const labelMatch = prev?.textContent?.trim().match(/^([A-ZА-Я])$/i);
-        if (labelMatch) {
-          const letter = labelMatch[1].toUpperCase();
+      if (answerCandidates.length < 2) {
+        const imgs = el.querySelectorAll("img");
+        for (const img of imgs) {
           const ocr = await recognizeImageText(img.src);
-          const combined = `${letter}) ${ocr}`;
-          const opt = document.createElement("div");
-          opt.innerText = combined;
-          opt.style.display = "none";
-          el.appendChild(opt);
-          answerCandidates.push(opt);
+          if (!ocr) continue;
+
+          // 1. Попытка найти "A) ..." и т.п.
+          const match = ocr.match(/^([A-ZА-Я])\)?\s+(.*)/);
+          if (match) {
+            const opt = document.createElement("div");
+            opt.innerText = `${match[1]}) ${match[2]}`;
+            opt.style.display = "none";
+            el.appendChild(opt);
+            answerCandidates.push(opt);
+          } else {
+            // 2. Иначе: разбиваем по строкам и ищем A/B/C/D вручную
+            const lines = ocr.split(/\n+/);
+            for (const line of lines) {
+              const lineMatch = line.trim().match(/^([A-ZА-Я])\)?\s+(.*)/);
+              if (lineMatch) {
+                const opt = document.createElement("div");
+                opt.innerText = `${lineMatch[1]}) ${lineMatch[2]}`;
+                opt.style.display = "none";
+                el.appendChild(opt);
+                answerCandidates.push(opt);
+              }
+            }
+          }
         }
       }
 
