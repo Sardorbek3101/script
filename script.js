@@ -6,26 +6,40 @@
   const { createWorker } = window.Tesseract;
 
   async function recognizeImageText(imageUrl) {
-    console.log("📈 OCR: loading tesseract core");
-    try {
-      const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(imageUrl)}`;
-      const response = await fetch(proxyUrl);
-      const blob = await response.blob();
-      const objectURL = URL.createObjectURL(blob);
+  console.log("📈 OCR: loading tesseract core");
+  try {
+    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(imageUrl)}`;
+    const response = await fetch(proxyUrl);
+    const blob = await response.blob();
+    const objectURL = URL.createObjectURL(blob);
 
-      const worker = await createWorker("eng");
-      const {
-        data: { text },
-      } = await worker.recognize(objectURL);
-      console.log("📝 Распознанный текст:", text);
-      URL.revokeObjectURL(objectURL);
-      await worker.terminate();
-      return text.trim();
-    } catch (err) {
-      console.error("❌ OCR error:", err);
-      return "";
-    }
+    const worker = await Tesseract.createWorker({
+      logger: m => console.log("📊 Tesseract log:", m),
+    });
+
+    await worker.loadLanguage("eng");
+    await worker.initialize("eng");
+
+    // Только нужные символы: латиница, цифры, знаки
+    await worker.setParameters({
+      tessedit_char_whitelist: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-×÷*/().,:=°%",
+    });
+
+    const {
+      data: { text },
+    } = await worker.recognize(objectURL);
+
+    console.log("📝 Распознанный текст:", text);
+    URL.revokeObjectURL(objectURL);
+    await worker.terminate();
+
+    return text.trim();
+  } catch (err) {
+    console.error("❌ OCR error:", err);
+    return "";
   }
+}
+
 
   let lastRightClick = 0;
   const RAPIDAPI_KEY = "e46117ae21msh918b1b8b54d4e47p1c1623jsnbfc839744a88";
@@ -95,37 +109,37 @@
       }
 
       if (questionCandidates.length > 0 && answerCandidates.length < 2) {
-  const imgs = el.querySelectorAll("img");
-  const buffer = [];
+        const imgs = el.querySelectorAll("img");
+        const buffer = [];
 
-  for (const img of imgs) {
-    const ocr = await recognizeImageText(img.src);
-    console.log("🖼️ OCR-ответ варианта:", ocr);
-    if (ocr) buffer.push(...ocr.trim().split("\n").map(l => l.trim()).filter(Boolean));
-  }
+        for (const img of imgs) {
+          const ocr = await recognizeImageText(img.src);
+          console.log("🖼️ OCR-ответ варианта:", ocr);
+          if (ocr) buffer.push(...ocr.trim().split("\n").map(l => l.trim()).filter(Boolean));
+        }
 
-  const seen = new Set();
+        const seen = new Set();
 
-  for (let i = 0; i < buffer.length; i++) {
-    let line = buffer[i];
+        for (let i = 0; i < buffer.length; i++) {
+          let line = buffer[i];
 
-    // 💡 Если строка — просто A), B), C) и т.п. — склеиваем с соседней
-    if (/^[A-ZА-Я]\)?$/.test(line) && i + 1 < buffer.length) {
-      line = `${line} ${buffer[i + 1]}`;
-      i++; // пропускаем следующий, он уже добавлен
-    }
+          // 💡 Если строка — просто A), B), C) и т.п. — склеиваем с соседней
+          if (/^[A-ZА-Я]\)?$/.test(line) && i + 1 < buffer.length) {
+            line = `${line} ${buffer[i + 1]}`;
+            i++; // пропускаем следующий, он уже добавлен
+          }
 
-    // 📌 Убираем совсем странные строки (одна буква, мусор и т.д.)
-    if (line.length < 2 || seen.has(line)) continue;
+          // 📌 Убираем совсем странные строки (одна буква, мусор и т.д.)
+          if (line.length < 2 || seen.has(line)) continue;
 
-    const opt = document.createElement("div");
-    opt.innerText = line;
-    opt.style.display = "none";
-    el.appendChild(opt);
-    answerCandidates.push(opt);
-    seen.add(line);
-  }
-}
+          const opt = document.createElement("div");
+          opt.innerText = line;
+          opt.style.display = "none";
+          el.appendChild(opt);
+          answerCandidates.push(opt);
+          seen.add(line);
+        }
+      }
 
 
       if (questionCandidates.length > 0 && answerCandidates.length >= 2) {
