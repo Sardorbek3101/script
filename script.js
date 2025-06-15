@@ -33,9 +33,8 @@
     }, 3000);
   });
 
-  document.addEventListener("mousedown", async (e) => {
+document.addEventListener("mousedown", async (e) => {
   if (e.button === 1) return;
-
 
   const now = Date.now();
   if (now - lastRightClick < 400) {
@@ -46,12 +45,10 @@
 
     let texts;
     if (selector.length > 0) {
-      // Пробуем точный селектор
       try {
         texts = el.querySelectorAll(`${selector} p, ${selector} span, ${selector} div, ${selector} li`);
         if (texts.length === 0) throw new Error("Ничего не найдено по селектору");
       } catch {
-        // Фолбэк
         texts = el.querySelectorAll("p, span, div, li");
         console.warn("⚠️ Переход к фолбэку без классов");
       }
@@ -59,9 +56,7 @@
       texts = el.querySelectorAll("p, span, div, li");
     }
 
- const questionCandidates = [...texts].filter(t => t.innerText?.replace(/\s+/g, " ").trim().length > 20);
-
-
+    const questionCandidates = [...texts].filter(t => t.innerText?.replace(/\s+/g, " ").trim().length > 20);
     const answerCandidates = [...texts].filter(t =>
       t.innerText?.match(/^[A-ZА-Я]\)?\s+/)
     );
@@ -79,8 +74,7 @@
         })
         .join("\n");
 
-      const prompt = `Ответь на вопрос, выбери правильный вариант, обоснуй решение.\n Вопрос:\n${questionText}\nВарианты:\n${options}\nОтвет (только буква):`;
-
+      const prompt = `Ответь на вопрос, выбери правильный вариант и обоснуй решение.\nВопрос:\n${questionText}\n\nВарианты:\n${options}`;
 
       let cloud = document.querySelector("#ai-answer-cloud");
       if (!cloud) {
@@ -109,8 +103,25 @@
       if (cloud.hideTimeout) clearTimeout(cloud.hideTimeout);
 
       try {
-  // Первый запрос — рассчитай по формуле
-        const fullResponse = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
+        // === Первый запрос — полное обоснование ===
+        const firstRes = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "X-RapidAPI-Key": RAPIDAPI_KEY,
+            "X-RapidAPI-Host": "chatgpt-42.p.rapidapi.com"
+          },
+          body: JSON.stringify({
+            messages: [{ role: "user", content: prompt }],
+            web_access: false
+          })
+        });
+
+        const firstData = await firstRes.json();
+        const fullAnswer = firstData.result?.trim() || "";
+
+        // === Второй запрос — только буква ===
+        const secondRes = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
           method: "POST",
           headers: {
             "content-type": "application/json",
@@ -119,47 +130,19 @@
           },
           body: JSON.stringify({
             messages: [
-              {
-                role: "user",
-                content: `Ответь на вопрос, выбери правильный вариант, обоснуй решение.\nВопрос:\n${questionText}\nВарианты:\n${options}`
-              }
+              { role: "system", content: fullAnswer },
+              { role: "user", content: "На основе этого решения: только буква правильного варианта (A, B, C или D). Без пояснений." }
             ],
             web_access: false
           })
         });
 
-        const fullData = await fullResponse.json();
-        const fullAnswer = fullData.result?.trim() || "";
-
-        // Второй запрос — попроси только букву на основе предыдущего
-        const shortResponse = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            "X-RapidAPI-Key": RAPIDAPI_KEY,
-            "X-RapidAPI-Host": "chatgpt-42.p.rapidapi.com"
-          },
-          body: JSON.stringify({
-            messages: [
-              {
-                role: "system",
-                content: fullAnswer
-              },
-              {
-                role: "user",
-                content: "На основе этого решения: только буква правильного варианта (A, B, C или D). Без пояснений."
-              }
-            ],
-            web_access: false
-          })
-        });
-
-        const shortData = await shortResponse.json();
-        const rawText = shortData.result?.trim() || "Нет ответа";
+        const secondData = await secondRes.json();
+        const rawText = secondData.result?.trim() || "Нет ответа";
         console.log("📤 Prompt к ChatGPT:\n", prompt);
         console.log("📥 Ответ модели (только буква):\n", rawText);
-        const match = rawText.match(/^[ABCDАБВГ]/i); // на случай русских букв
-        const answerLetter = match ? match[0].toUpperCase() : "Нет ответа";
+        const match = rawText.match(/\b[ABCDАБВГ]\b/i);
+        const answerLetter = match ? match[0].toUpperCase() : "❓";
 
         cloud.textContent = answerLetter;
 
@@ -167,12 +150,10 @@
           cloud.style.opacity = "0";
           setTimeout(() => cloud.remove(), 300);
         }, 3000);
-
       } catch (err) {
-        cloud.textContent = "Ошибка API.";
+        cloud.textContent = "Ошибка запроса";
         console.error(err);
       }
-
     } else {
       console.warn("❌ Вопрос или ответы не найдены в этом элементе.");
     }
