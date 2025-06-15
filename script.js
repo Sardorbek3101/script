@@ -130,8 +130,7 @@ document.addEventListener("mousedown", async (e) => {
           },
           body: JSON.stringify({
             messages: [
-              { role: "system", content: fullAnswer },
-              { role: "user", content: "На основе этого решения: только буква правильного варианта (A, B, C или D). Без пояснений." }
+              {  role: "user", content: `Вот решение задачи:\n${fullAnswer}\n\nТеперь скажи только букву правильного варианта ответа (A, B, C или D). Без пояснений.` }
             ],
             web_access: false
           })
@@ -139,7 +138,7 @@ document.addEventListener("mousedown", async (e) => {
 
         const secondData = await secondRes.json();
         const rawText = secondData.result?.trim() || "Нет ответа";
-        console.log("📤 Prompt к ChatGPT:\n", prompt);
+        console.log("📤 Prompt к ChatGPT:\n", `Вот решение задачи:\n${fullAnswer}\n\nТеперь скажи только букву правильного варианта ответа (A, B, C или D). Без пояснений.`);
         console.log("📥 Ответ модели (только буква):\n", rawText);
         const match = rawText.match(/\b[ABCDАБВГ]\b/i);
         const answerLetter = match ? match[0].toUpperCase() : "❓";
