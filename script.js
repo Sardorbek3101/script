@@ -33,134 +33,184 @@
     }, 3000);
   });
 
-document.addEventListener("mousedown", async (e) => {
-  if (e.button === 1) return;
+  document.addEventListener("mousedown", async (e) => {
+    if (e.button === 1) return;
 
-  const now = Date.now();
-  if (now - lastRightClick < 400) {
-    const el = e.target;
-    let selector = [...el.classList].map(cls => `.${cls}`).join("");
+    const now = Date.now();
+    if (now - lastRightClick < 400) {
+      const el = e.target;
+      let selector = [...el.classList].map(cls => `.${cls}`).join("");
 
-    console.log("📌 Селектор по классам:", selector);
+      console.log("📌 Селектор по классам:", selector);
 
-    let texts;
-    if (selector.length > 0) {
-      try {
-        texts = el.querySelectorAll(`${selector} p, ${selector} span, ${selector} div, ${selector} li`);
-        if (texts.length === 0) throw new Error("Ничего не найдено по селектору");
-      } catch {
+      let texts;
+      if (selector.length > 0) {
+        try {
+          texts = el.querySelectorAll(`${selector} p, ${selector} span, ${selector} div, ${selector} li`);
+          if (texts.length === 0) throw new Error("Ничего не найдено по селектору");
+        } catch {
+          texts = el.querySelectorAll("p, span, div, li");
+          console.warn("⚠️ Переход к фолбэку без классов");
+        }
+      } else {
         texts = el.querySelectorAll("p, span, div, li");
-        console.warn("⚠️ Переход к фолбэку без классов");
       }
-    } else {
-      texts = el.querySelectorAll("p, span, div, li");
-    }
 
-    const questionCandidates = [...texts].filter(t => t.innerText?.replace(/\s+/g, " ").trim().length > 20);
-    const answerCandidates = [...texts].filter(t =>
-      t.innerText?.match(/^[A-ZА-Я]\)?\s+/)
-    );
+      // === OCR-функция ===
+      if (!window.Tesseract) {
+        await import("https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js");
+      }
 
-    if (questionCandidates.length > 0 && answerCandidates.length >= 2) {
-      const questionText = questionCandidates[0].innerText.trim();
+      async function recognizeImageText(img) {
+        try {
+          const result = await Tesseract.recognize(img.src, "eng", {
+            logger: m => console.log("📈 OCR:", m.status, m.progress)
+          });
+          return result.data.text.trim();
+        } catch (err) {
+          console.error("❌ Ошибка OCR:", err);
+          return "";
+        }
+      }
 
-      const seen = new Set();
-      const options = answerCandidates
-        .map(a => a.innerText.trim())
-        .filter(opt => {
-          if (seen.has(opt)) return false;
-          seen.add(opt);
-          return true;
+      // === Получение текста вопроса ===
+      let questionCandidates = [...texts].filter(t => t.innerText?.replace(/\s+/g, " ").trim().length > 20);
+
+      if (questionCandidates.length === 0) {
+        const imgInBox = el.querySelector("img");
+        if (imgInBox) {
+          const recognized = await recognizeImageText(imgInBox);
+          if (recognized.length > 10) {
+            const pseudoParagraph = document.createElement("p");
+            pseudoParagraph.innerText = recognized;
+            questionCandidates = [pseudoParagraph];
+          }
+        }
+      }
+
+      // === Получение вариантов ответа, включая OCR ===
+      const rawAnswers = await Promise.all(
+        [...texts].map(async (t) => {
+          const raw = t.innerText?.trim() || "";
+          if (raw.match(/^[A-ZА-Я]\)?\s+/)) return t;
+
+          const imgs = t.querySelectorAll("img");
+          if (imgs.length > 0) {
+            let combinedText = "";
+            for (const img of imgs) {
+              const ocrText = await recognizeImageText(img);
+              combinedText += " " + ocrText;
+            }
+            if (combinedText.match(/^[A-ZА-Я]\)?\s+/)) {
+              const clone = t.cloneNode(true);
+              clone.innerText = combinedText.trim();
+              return clone;
+            }
+          }
+
+          return null;
         })
-        .join("\n");
+      );
 
-      const prompt = `Ответь на вопрос, выбери правильный вариант и обоснуй решение.\nВопрос:\n${questionText}\n\nВарианты:\n${options}`;
+      const answerCandidates = rawAnswers.filter(Boolean);
 
-      let cloud = document.querySelector("#ai-answer-cloud");
-      if (!cloud) {
-        cloud = document.createElement("div");
-        cloud.id = "ai-answer-cloud";
-        cloud.style = `
-          position: absolute;
-          background: rgba(255, 255, 255, 0.06);
-          padding: 4px 8px;
-          border-radius: 6px;
-          font-size: 12px;
-          color: #222;
-          font-family: sans-serif;
-          pointer-events: none;
-          z-index: 9999;
-          transition: opacity 0.3s ease;
-        `;
-        document.body.appendChild(cloud);
-      }
+      if (questionCandidates.length > 0 && answerCandidates.length >= 2) {
+        const questionText = questionCandidates[0].innerText.trim();
 
-      cloud.style.opacity = "1";
-      cloud.textContent = "...";
-      cloud.style.left = (e.pageX + 10) + "px";
-      cloud.style.top = (e.pageY - 30) + "px";
-
-      if (cloud.hideTimeout) clearTimeout(cloud.hideTimeout);
-
-      try {
-        // === Первый запрос — полное обоснование ===
-        const firstRes = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            "X-RapidAPI-Key": RAPIDAPI_KEY,
-            "X-RapidAPI-Host": "chatgpt-42.p.rapidapi.com"
-          },
-          body: JSON.stringify({
-            messages: [{ role: "user", content: prompt }],
-            web_access: false
+        const seen = new Set();
+        const options = answerCandidates
+          .map(a => a.innerText.trim())
+          .filter(opt => {
+            if (seen.has(opt)) return false;
+            seen.add(opt);
+            return true;
           })
-        });
+          .join("\n");
 
-        const firstData = await firstRes.json();
-        const fullAnswer = firstData.result?.trim() || "";
+        const prompt = `Ответь на вопрос, выбери правильный вариант и обоснуй решение.\nВопрос:\n${questionText}\n\nВарианты:\n${options}`;
 
-        // === Второй запрос — только буква ===
-        const secondRes = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            "X-RapidAPI-Key": RAPIDAPI_KEY,
-            "X-RapidAPI-Host": "chatgpt-42.p.rapidapi.com"
-          },
-          body: JSON.stringify({
-            messages: [
-              {  role: "user", content: `Вот решение задачи:\n${fullAnswer}\n\nТеперь скажи только букву правильного варианта ответа (A, B, C или D). Без пояснений.` }
-            ],
-            web_access: false
-          })
-        });
+        let cloud = document.querySelector("#ai-answer-cloud");
+        if (!cloud) {
+          cloud = document.createElement("div");
+          cloud.id = "ai-answer-cloud";
+          cloud.style = `
+            position: absolute;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #222;
+            font-family: sans-serif;
+            pointer-events: none;
+            z-index: 9999;
+            transition: opacity 0.3s ease;
+          `;
+          document.body.appendChild(cloud);
+        }
 
-        const secondData = await secondRes.json();
-        const rawText = secondData.result?.trim() || "Нет ответа";
-        console.log("📤 Prompt к ChatGPT:\n", `Вот решение задачи:\n${fullAnswer}\n\nТеперь скажи только букву правильного варианта ответа (A, B, C или D). Без пояснений.`);
-        console.log("📥 Ответ модели (только буква):\n", rawText);
-        const match = rawText.match(/\b[ABCDАБВГ]\b/i);
-        const answerLetter = match ? match[0].toUpperCase() : "❓";
+        cloud.style.opacity = "1";
+        cloud.textContent = "...";
+        cloud.style.left = (e.pageX + 10) + "px";
+        cloud.style.top = (e.pageY - 30) + "px";
 
-        cloud.textContent = answerLetter;
+        if (cloud.hideTimeout) clearTimeout(cloud.hideTimeout);
 
-        cloud.hideTimeout = setTimeout(() => {
-          cloud.style.opacity = "0";
-          setTimeout(() => cloud.remove(), 300);
-        }, 3000);
-      } catch (err) {
-        cloud.textContent = "Ошибка запроса";
-        console.error(err);
+        try {
+          const firstRes = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
+            method: "POST",
+            headers: {
+              "content-type": "application/json",
+              "X-RapidAPI-Key": RAPIDAPI_KEY,
+              "X-RapidAPI-Host": "chatgpt-42.p.rapidapi.com"
+            },
+            body: JSON.stringify({
+              messages: [{ role: "user", content: prompt }],
+              web_access: false
+            })
+          });
+
+          const firstData = await firstRes.json();
+          const fullAnswer = firstData.result?.trim() || "";
+
+          const secondRes = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
+            method: "POST",
+            headers: {
+              "content-type": "application/json",
+              "X-RapidAPI-Key": RAPIDAPI_KEY,
+              "X-RapidAPI-Host": "chatgpt-42.p.rapidapi.com"
+            },
+            body: JSON.stringify({
+              messages: [
+                { role: "user", content: `Вот решение задачи:\n${fullAnswer}\n\nТеперь скажи только букву правильного варианта ответа (A, B, C или D). Без пояснений.` }
+              ],
+              web_access: false
+            })
+          });
+
+          const secondData = await secondRes.json();
+          const rawText = secondData.result?.trim() || "Нет ответа";
+          console.log("📤 Prompt к ChatGPT:\n", `Вот решение задачи:\n${fullAnswer}\n\nТеперь скажи только букву правильного варианта ответа (A, B, C или D). Без пояснений.`);
+          console.log("📥 Ответ модели (только буква):\n", rawText);
+          const match = rawText.match(/\b[ABCDАБВГ]\b/i);
+          const answerLetter = match ? match[0].toUpperCase() : "❓";
+
+          cloud.textContent = answerLetter;
+
+          cloud.hideTimeout = setTimeout(() => {
+            cloud.style.opacity = "0";
+            setTimeout(() => cloud.remove(), 300);
+          }, 3000);
+        } catch (err) {
+          cloud.textContent = "Ошибка запроса";
+          console.error(err);
+        }
+      } else {
+        console.warn("❌ Вопрос или ответы не найдены в этом элементе.");
       }
-    } else {
-      console.warn("❌ Вопрос или ответы не найдены в этом элементе.");
     }
-  }
 
-  lastRightClick = now;
-});
-
+    lastRightClick = now;
+  });
 
   // === Подсветка элемента под курсором, включается по Ctrl + Q ===
   let highlightEnabled = false;
@@ -201,35 +251,33 @@ document.addEventListener("mousedown", async (e) => {
   });
 
   // Включение подсветки по клику: левая → правая → левая
-let clickSequence = [];
-let lastClickTime = 0;
-const sequenceTimeout = 1500; // 1.5 секунды
+  let clickSequence = [];
+  let lastClickTime = 0;
+  const sequenceTimeout = 1500;
 
-document.addEventListener("mousedown", (e) => {
-  const currentTime = Date.now();
+  document.addEventListener("mousedown", (e) => {
+    const currentTime = Date.now();
 
-  // Если прошло больше 1.5 секунды с последнего клика — сбросить последовательность
-  if (currentTime - lastClickTime > sequenceTimeout) {
-    clickSequence = [];
-  }
+    if (currentTime - lastClickTime > sequenceTimeout) {
+      clickSequence = [];
+    }
 
-  clickSequence.push(e.button); // 0 = левая, 2 = правая
-  if (clickSequence.length > 3) clickSequence.shift();
+    clickSequence.push(e.button);
+    if (clickSequence.length > 3) clickSequence.shift();
 
-  lastClickTime = currentTime;
+    lastClickTime = currentTime;
 
-  const sequenceStr = clickSequence.join(",");
+    const sequenceStr = clickSequence.join(",");
 
-  if (sequenceStr === "0,2,0" || sequenceStr === "0,0,0") {
-    highlightEnabled = !highlightEnabled;
-    highlightEnabled ? enableHighlight() : disableHighlight();
-    console.log("Подсветка (мышь): " + (highlightEnabled ? "ВКЛ" : "ВЫКЛ"));
-    clickSequence = [];
-  }
-});
+    if (sequenceStr === "0,2,0" || sequenceStr === "0,0,0") {
+      highlightEnabled = !highlightEnabled;
+      highlightEnabled ? enableHighlight() : disableHighlight();
+      console.log("Подсветка (мышь): " + (highlightEnabled ? "ВКЛ" : "ВЫКЛ"));
+      clickSequence = [];
+    }
+  });
 
-
-    document.addEventListener("keydown", (e) => {
+  document.addEventListener("keydown", (e) => {
     if (e.ctrlKey && e.key.toLowerCase() === "z") {
       console.log("🔁 Ctrl + Z: Перезагрузка страницы");
       location.reload();
