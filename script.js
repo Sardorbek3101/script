@@ -5,20 +5,11 @@
 
   const { createWorker } = window.Tesseract;
 
-  async function recognizeImageText(imageUrl) {
+  async function recognizeImageTextFromElement(img) {
     console.log("📈 OCR: loading tesseract core");
     try {
-      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(imageUrl)}`;
-      const response = await fetch(proxyUrl);
-      const blob = await response.blob();
-      const objectURL = URL.createObjectURL(blob);
-
       const worker = await createWorker("eng");
-      const {
-        data: { text },
-      } = await worker.recognize(objectURL);
-
-      URL.revokeObjectURL(objectURL);
+      const { data: { text } } = await worker.recognize(img);
       await worker.terminate();
       return text.trim();
     } catch (err) {
@@ -80,11 +71,11 @@
       let questionCandidates = [...texts].filter(t => t.innerText?.replace(/\s+/g, " ").trim().length > 20);
       let answerCandidates = [...texts].filter(t => t.innerText?.match(/^[A-ZА-Я]\)?\s+/));
 
-      // === Если нет вопроса — проверяем наличие изображения и применяем OCR ===
+      // === Если нет вопроса — ищем изображение ===
       if (questionCandidates.length === 0) {
         const img = el.querySelector("img");
         if (img) {
-          const ocrText = await recognizeImageText(img);
+          const ocrText = await recognizeImageTextFromElement(img);
           if (ocrText.length > 20) {
             const node = document.createElement("div");
             node.innerText = ocrText;
@@ -95,11 +86,11 @@
         }
       }
 
-      // === Если нет текста вариантов — проверяем картинки и применяем OCR ===
+      // === Если нет вариантов — ищем картинки и применяем OCR ===
       if (answerCandidates.length < 2) {
         const imgs = el.querySelectorAll("img");
         for (const img of imgs) {
-          const ocr = await recognizeImageText(img.src);
+          const ocr = await recognizeImageTextFromElement(img);
           if (/^[A-ZА-Я]\)?\s+/.test(ocr)) {
             const opt = document.createElement("div");
             opt.innerText = ocr;
@@ -205,7 +196,7 @@
     lastRightClick = now;
   });
 
-  // Подсветка элемента под курсором (Ctrl + Q)
+  // Подсветка (Ctrl + Q)
   let highlightEnabled = false;
   let lastHovered = null;
 
