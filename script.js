@@ -79,7 +79,7 @@
         })
         .join("\n");
 
-      const prompt = `Выбери правильный ответ. Вопрос:\n${questionText}\nВарианты:\n${options}\nОтвет (только буква):`;
+      const prompt = `Ответь на вопрос, выбери правильный вариант, обоснуй решение.\n Вопрос:\n${questionText}\nВарианты:\n${options}\nОтвет (только буква):`;
 
 
       let cloud = document.querySelector("#ai-answer-cloud");
@@ -109,8 +109,8 @@
       if (cloud.hideTimeout) clearTimeout(cloud.hideTimeout);
 
       try {
-        // Первый запрос — расчёт
-        const fullRes = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
+  // Первый запрос — рассчитай по формуле
+        const fullResponse = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
           method: "POST",
           headers: {
             "content-type": "application/json",
@@ -121,18 +121,18 @@
             messages: [
               {
                 role: "user",
-                content: `Реши тест. Вопрос:\n${questionText}\nВарианты:\n${options}`
+                content: `Ответь на вопрос, выбери правильный вариант, обоснуй решение.\nВопрос:\n${questionText}\nВарианты:\n${options}`
               }
             ],
             web_access: false
           })
         });
 
-        const fullData = await fullRes.json();
+        const fullData = await fullResponse.json();
         const fullAnswer = fullData.result?.trim() || "";
 
-        // Второй запрос — извлечение буквы
-        const shortRes = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
+        // Второй запрос — попроси только букву на основе предыдущего
+        const shortResponse = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
           method: "POST",
           headers: {
             "content-type": "application/json",
@@ -147,18 +147,18 @@
               },
               {
                 role: "user",
-                content: "На основе решения выше: только буква правильного варианта: A, B, C или D."
+                content: "На основе этого решения: только буква правильного варианта (A, B, C или D). Без пояснений."
               }
             ],
             web_access: false
           })
         });
 
-        const shortData = await shortRes.json();
+        const shortData = await shortResponse.json();
         const rawText = shortData.result?.trim() || "Нет ответа";
         console.log("📤 Prompt к ChatGPT:\n", prompt);
-        console.log("📥 Ответ модели (буква):\n", rawText);
-        const match = rawText.match(/^[ABCD]/i);
+        console.log("📥 Ответ модели (только буква):\n", rawText);
+        const match = rawText.match(/^[ABCDАБВГ]/i); // на случай русских букв
         const answerLetter = match ? match[0].toUpperCase() : "Нет ответа";
 
         cloud.textContent = answerLetter;
@@ -167,10 +167,12 @@
           cloud.style.opacity = "0";
           setTimeout(() => cloud.remove(), 300);
         }, 3000);
+
       } catch (err) {
-        cloud.textContent = "Ошибка подключения.";
+        cloud.textContent = "Ошибка API.";
         console.error(err);
       }
+
     } else {
       console.warn("❌ Вопрос или ответы не найдены в этом элементе.");
     }
