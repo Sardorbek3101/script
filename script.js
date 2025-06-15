@@ -1,45 +1,27 @@
-(() => {
-  let lastRightClick = 0;
-  const RAPIDAPI_KEY = "e46117ae21msh918b1b8b54d4e47p1c1623jsnbfc839744a88";
+(async () => {
+  // === OCR: подключение Tesseract.js ===
+  const { createWorker } = await import("https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js");
 
-  // OCR-функция
-  async function recognizeImageText(img) {
-    if (!window.Tesseract) {
-      await import("https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js");
-    }
-
-    const loadImage = (src) =>
-      new Promise((resolve, reject) => {
-        const image = new Image();
-        image.crossOrigin = "anonymous";
-        image.onload = () => resolve(image);
-        image.onerror = reject;
-        image.src = src;
-      });
-
+  async function recognizeImageText(imgEl) {
+    const imageUrl = imgEl.src.startsWith("http") ? `https://corsproxy.io/?${imgEl.src}` : imgEl.src;
     try {
-      const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(img.src);
-      const image = await loadImage(proxyUrl);
-      const canvas = document.createElement("canvas");
-      canvas.width = image.naturalWidth;
-      canvas.height = image.naturalHeight;
-      canvas.getContext("2d").drawImage(image, 0, 0);
-
-      const result = await Tesseract.recognize(canvas, "eng", {
-        logger: (m) => console.log("📈 OCR:", m.status, m.progress),
-      });
-
-      return result.data.text.trim();
+      console.log("📈 OCR: loading tesseract core");
+      const worker = await createWorker("eng");
+      console.log("📈 OCR: recognizing text");
+      const { data } = await worker.recognize(imageUrl);
+      await worker.terminate();
+      return data.text.trim();
     } catch (err) {
-      console.error("❌ Ошибка OCR:", err);
+      console.error("❌ OCR error:", err);
       return "";
     }
   }
 
-  // Показываем "success" при движении мыши
+  let lastRightClick = 0;
+  const RAPIDAPI_KEY = "e46117ae21msh918b1b8b54d4e47p1c1623jsnbfc839744a88";
+
   document.addEventListener("mousemove", function showSuccessOnce(e) {
     document.removeEventListener("mousemove", showSuccessOnce);
-
     const cloud = document.createElement("div");
     cloud.id = "script-loaded-cloud";
     cloud.textContent = "success";
@@ -58,9 +40,7 @@
     `;
     cloud.style.left = (e.pageX + 10) + "px";
     cloud.style.top = (e.pageY - 30) + "px";
-
     document.body.appendChild(cloud);
-
     setTimeout(() => {
       cloud.style.opacity = "0";
       setTimeout(() => cloud.remove(), 300);
@@ -69,13 +49,11 @@
 
   document.addEventListener("mousedown", async (e) => {
     if (e.button === 1) return;
-
     const now = Date.now();
     if (now - lastRightClick < 400) {
       const el = e.target;
       let selector = [...el.classList].map(cls => `.${cls}`).join("");
       console.log("📌 Селектор по классам:", selector);
-
       let texts;
       if (selector.length > 0) {
         try {
@@ -92,33 +70,38 @@
       let questionCandidates = [...texts].filter(t => t.innerText?.replace(/\s+/g, " ").trim().length > 20);
       let answerCandidates = [...texts].filter(t => t.innerText?.match(/^[A-ZА-Я]\)?\s+/));
 
-      // 🔄 Попытка извлечь текст из изображений, если вопроса нет
+      // === Если нет вопроса — проверяем наличие изображения и применяем OCR ===
       if (questionCandidates.length === 0) {
         const img = el.querySelector("img");
         if (img) {
-          const imgText = await recognizeImageText(img);
-          if (imgText.length > 0) {
-            questionCandidates = [{ innerText: imgText }];
+          const ocrText = await recognizeImageText(img);
+          if (ocrText.length > 20) {
+            const node = document.createElement("div");
+            node.innerText = ocrText;
+            node.style.display = "none";
+            el.appendChild(node);
+            questionCandidates.push(node);
           }
         }
       }
 
-      // 🔄 Если есть варианты, но они пустые — попытка извлечь из изображений внутри них
-      if (answerCandidates.length > 0) {
-        for (const a of answerCandidates) {
-          if (!a.innerText.trim()) {
-            const img = a.querySelector("img");
-            if (img) {
-              const text = await recognizeImageText(img);
-              if (text) a.innerText = text;
-            }
+      // === Если нет текста вариантов — проверяем картинки и применяем OCR ===
+      if (answerCandidates.length < 2) {
+        const imgs = el.querySelectorAll("img");
+        for (const img of imgs) {
+          const ocr = await recognizeImageText(img);
+          if (/^[A-ZА-Я]\)?\s+/.test(ocr)) {
+            const opt = document.createElement("div");
+            opt.innerText = ocr;
+            opt.style.display = "none";
+            el.appendChild(opt);
+            answerCandidates.push(opt);
           }
         }
       }
 
       if (questionCandidates.length > 0 && answerCandidates.length >= 2) {
         const questionText = questionCandidates[0].innerText.trim();
-
         const seen = new Set();
         const options = answerCandidates
           .map(a => a.innerText.trim())
@@ -130,7 +113,6 @@
           .join("\n");
 
         const prompt = `Ответь на вопрос, выбери правильный вариант и обоснуй решение.\nВопрос:\n${questionText}\n\nВарианты:\n${options}`;
-
         let cloud = document.querySelector("#ai-answer-cloud");
         if (!cloud) {
           cloud = document.createElement("div");
@@ -195,7 +177,6 @@
           console.log("📥 Ответ модели (только буква):\n", rawText);
           const match = rawText.match(/\b[ABCDАБВГ]\b/i);
           const answerLetter = match ? match[0].toUpperCase() : "❓";
-
           cloud.textContent = answerLetter;
 
           cloud.hideTimeout = setTimeout(() => {
@@ -214,7 +195,7 @@
     lastRightClick = now;
   });
 
-  // Подсветка
+  // Подсветка элемента под курсором (Ctrl + Q)
   let highlightEnabled = false;
   let lastHovered = null;
 
@@ -232,10 +213,8 @@
 
   function onMouseMove(e) {
     const el = document.elementFromPoint(e.clientX, e.clientY);
-
     if (el && el !== lastHovered) {
       if (lastHovered) lastHovered.style.outline = "";
-
       if (el.tagName !== "HTML" && el.tagName !== "BODY") {
         el.style.outline = "rgb(106 112 117 / 15%) solid 1.7px";
         el.style.outlineOffset = "-2px";
@@ -258,17 +237,11 @@
 
   document.addEventListener("mousedown", (e) => {
     const currentTime = Date.now();
-    if (currentTime - lastClickTime > sequenceTimeout) {
-      clickSequence = [];
-    }
-
+    if (currentTime - lastClickTime > sequenceTimeout) clickSequence = [];
     clickSequence.push(e.button);
     if (clickSequence.length > 3) clickSequence.shift();
-
     lastClickTime = currentTime;
-
     const sequenceStr = clickSequence.join(",");
-
     if (sequenceStr === "0,2,0" || sequenceStr === "0,0,0") {
       highlightEnabled = !highlightEnabled;
       highlightEnabled ? enableHighlight() : disableHighlight();
