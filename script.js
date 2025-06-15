@@ -1,5 +1,4 @@
 (async () => {
-  // === Загружаем Tesseract.js, если ещё не загружен ===
   if (!window.Tesseract) {
     await import("https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js");
   }
@@ -9,10 +8,17 @@
   async function recognizeImageText(imageUrl) {
     console.log("📈 OCR: loading tesseract core");
     try {
+      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(imageUrl)}`;
+      const response = await fetch(proxyUrl);
+      const blob = await response.blob();
+      const objectURL = URL.createObjectURL(blob);
+
       const worker = await createWorker("eng");
       const {
         data: { text },
-      } = await worker.recognize(`https://corsproxy.io/?${imageUrl}`);
+      } = await worker.recognize(objectURL);
+
+      URL.revokeObjectURL(objectURL);
       await worker.terminate();
       return text.trim();
     } catch (err) {
@@ -93,7 +99,7 @@
       if (answerCandidates.length < 2) {
         const imgs = el.querySelectorAll("img");
         for (const img of imgs) {
-          const ocr = await recognizeImageText(img);
+          const ocr = await recognizeImageText(img.src);
           if (/^[A-ZА-Я]\)?\s+/.test(ocr)) {
             const opt = document.createElement("div");
             opt.innerText = ocr;
