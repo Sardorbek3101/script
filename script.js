@@ -94,28 +94,36 @@
         }
       }
 
-      if (answerCandidates.length < 2) {
+      if (questionCandidates.length > 0 && answerCandidates.length < 2) {
   const imgs = el.querySelectorAll("img");
   const buffer = [];
 
   for (const img of imgs) {
     const ocr = await recognizeImageText(img.src);
     console.log("🖼️ OCR-ответ варианта:", ocr);
-    if (ocr) buffer.push(ocr.trim());
+    if (ocr) buffer.push(...ocr.trim().split("\n").map(l => l.trim()).filter(Boolean));
   }
 
-  // Попытка выделить A) текст, B) текст и т.д.
-  for (const text of buffer) {
-    const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
-    for (const line of lines) {
-      if (/^[A-ZА-Я]\)?[\s:]/.test(line)) {
-        const opt = document.createElement("div");
-        opt.innerText = line;
-        opt.style.display = "none";
-        el.appendChild(opt);
-        answerCandidates.push(opt);
-      }
+  const seen = new Set();
+
+  for (let i = 0; i < buffer.length; i++) {
+    let line = buffer[i];
+
+    // 💡 Если строка — просто A), B), C) и т.п. — склеиваем с соседней
+    if (/^[A-ZА-Я]\)?$/.test(line) && i + 1 < buffer.length) {
+      line = `${line} ${buffer[i + 1]}`;
+      i++; // пропускаем следующий, он уже добавлен
     }
+
+    // 📌 Убираем совсем странные строки (одна буква, мусор и т.д.)
+    if (line.length < 2 || seen.has(line)) continue;
+
+    const opt = document.createElement("div");
+    opt.innerText = line;
+    opt.style.display = "none";
+    el.appendChild(opt);
+    answerCandidates.push(opt);
+    seen.add(line);
   }
 }
 
