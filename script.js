@@ -5,11 +5,20 @@
 
   const { createWorker } = window.Tesseract;
 
-  async function recognizeImageTextFromElement(img) {
+  async function recognizeImageText(imageUrl) {
     console.log("📈 OCR: loading tesseract core");
     try {
+      const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(imageUrl)}`;
+      const response = await fetch(proxyUrl);
+      const blob = await response.blob();
+      const objectURL = URL.createObjectURL(blob);
+
       const worker = await createWorker("eng");
-      const { data: { text } } = await worker.recognize(img);
+      const {
+        data: { text },
+      } = await worker.recognize(objectURL);
+
+      URL.revokeObjectURL(objectURL);
       await worker.terminate();
       return text.trim();
     } catch (err) {
@@ -71,11 +80,10 @@
       let questionCandidates = [...texts].filter(t => t.innerText?.replace(/\s+/g, " ").trim().length > 20);
       let answerCandidates = [...texts].filter(t => t.innerText?.match(/^[A-ZА-Я]\)?\s+/));
 
-      // === Если нет вопроса — ищем изображение ===
       if (questionCandidates.length === 0) {
         const img = el.querySelector("img");
         if (img) {
-          const ocrText = await recognizeImageTextFromElement(img);
+          const ocrText = await recognizeImageText(img.src);
           if (ocrText.length > 20) {
             const node = document.createElement("div");
             node.innerText = ocrText;
@@ -86,11 +94,10 @@
         }
       }
 
-      // === Если нет вариантов — ищем картинки и применяем OCR ===
       if (answerCandidates.length < 2) {
         const imgs = el.querySelectorAll("img");
         for (const img of imgs) {
-          const ocr = await recognizeImageTextFromElement(img);
+          const ocr = await recognizeImageText(img.src);
           if (/^[A-ZА-Я]\)?\s+/.test(ocr)) {
             const opt = document.createElement("div");
             opt.innerText = ocr;
@@ -196,7 +203,7 @@
     lastRightClick = now;
   });
 
-  // Подсветка (Ctrl + Q)
+  // Подсветка Ctrl+Q
   let highlightEnabled = false;
   let lastHovered = null;
 
@@ -232,6 +239,7 @@
     }
   });
 
+  // Альтернативная подсветка (клики)
   let clickSequence = [];
   let lastClickTime = 0;
   const sequenceTimeout = 1500;
@@ -251,6 +259,7 @@
     }
   });
 
+  // Перезагрузка Ctrl+Z
   document.addEventListener("keydown", (e) => {
     if (e.ctrlKey && e.key.toLowerCase() === "z") {
       console.log("🔁 Ctrl + Z: Перезагрузка страницы");
