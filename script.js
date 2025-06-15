@@ -6,40 +6,26 @@
   const { createWorker } = window.Tesseract;
 
   async function recognizeImageText(imageUrl) {
-  console.log("📈 OCR: loading tesseract core");
-  try {
-    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(imageUrl)}`;
-    const response = await fetch(proxyUrl);
-    const blob = await response.blob();
-    const objectURL = URL.createObjectURL(blob);
+    console.log("📈 OCR: loading tesseract core");
+    try {
+      const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(imageUrl)}`;
+      const response = await fetch(proxyUrl);
+      const blob = await response.blob();
+      const objectURL = URL.createObjectURL(blob);
 
-    const worker = await Tesseract.createWorker({
-      logger: m => console.log("📊 Tesseract log:", m),
-    });
-
-    await worker.loadLanguage("eng");
-    await worker.initialize("eng");
-
-    // Только нужные символы: латиница, цифры, знаки
-    await worker.setParameters({
-      tessedit_char_whitelist: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-×÷*/().,:=°%",
-    });
-
-    const {
-      data: { text },
-    } = await worker.recognize(objectURL);
-
-    console.log("📝 Распознанный текст:", text);
-    URL.revokeObjectURL(objectURL);
-    await worker.terminate();
-
-    return text.trim();
-  } catch (err) {
-    console.error("❌ OCR error:", err);
-    return "";
+      const worker = await createWorker("eng");
+      const {
+        data: { text },
+      } = await worker.recognize(objectURL);
+      console.log("📝 Распознанный текст:", text);
+      URL.revokeObjectURL(objectURL);
+      await worker.terminate();
+      return text.trim();
+    } catch (err) {
+      console.error("❌ OCR error:", err);
+      return "";
+    }
   }
-}
-
 
   let lastRightClick = 0;
   const RAPIDAPI_KEY = "e46117ae21msh918b1b8b54d4e47p1c1623jsnbfc839744a88";
