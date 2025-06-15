@@ -1,16 +1,20 @@
 (async () => {
-  // === OCR: подключение Tesseract.js ===
-  const { createWorker } = await import("https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js");
+  // === Загружаем Tesseract.js, если ещё не загружен ===
+  if (!window.Tesseract) {
+    await import("https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js");
+  }
 
-  async function recognizeImageText(imgEl) {
-    const imageUrl = imgEl.src.startsWith("http") ? `https://corsproxy.io/?${imgEl.src}` : imgEl.src;
+  const { createWorker } = window.Tesseract;
+
+  async function recognizeImageText(imageUrl) {
+    console.log("📈 OCR: loading tesseract core");
     try {
-      console.log("📈 OCR: loading tesseract core");
       const worker = await createWorker("eng");
-      console.log("📈 OCR: recognizing text");
-      const { data } = await worker.recognize(imageUrl);
+      const {
+        data: { text },
+      } = await worker.recognize(`https://corsproxy.io/?${imageUrl}`);
       await worker.terminate();
-      return data.text.trim();
+      return text.trim();
     } catch (err) {
       console.error("❌ OCR error:", err);
       return "";
