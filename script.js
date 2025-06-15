@@ -121,7 +121,7 @@
             messages: [
               {
                 role: "user",
-                content: `Реши задачу по формуле. Вопрос:\n${questionText}\nВарианты:\n${options}`
+                content: `Реши тест. Вопрос:\n${questionText}\nВарианты:\n${options}`
               }
             ],
             web_access: false
@@ -156,7 +156,7 @@
 
         const shortData = await shortRes.json();
         const rawText = shortData.result?.trim() || "Нет ответа";
-
+        console.log("📤 Prompt к ChatGPT:\n", prompt);
         console.log("📥 Ответ модели (буква):\n", rawText);
         const match = rawText.match(/^[ABCD]/i);
         const answerLetter = match ? match[0].toUpperCase() : "Нет ответа";
