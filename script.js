@@ -17,7 +17,7 @@
       const {
         data: { text },
       } = await worker.recognize(objectURL);
-
+      console.log("📝 Распознанный текст:", text);
       URL.revokeObjectURL(objectURL);
       await worker.terminate();
       return text.trim();
@@ -94,19 +94,22 @@
         }
       }
 
-      if (answerCandidates.length < 2) {
-        const imgs = el.querySelectorAll("img");
-        for (const img of imgs) {
+      const imgs = el.querySelectorAll("img");
+      for (const img of imgs) {
+        const prev = img.previousSibling;
+        const labelMatch = prev?.textContent?.trim().match(/^([A-ZА-Я])$/i);
+        if (labelMatch) {
+          const letter = labelMatch[1].toUpperCase();
           const ocr = await recognizeImageText(img.src);
-          if (/^[A-ZА-Я]\)?\s+/.test(ocr)) {
-            const opt = document.createElement("div");
-            opt.innerText = ocr;
-            opt.style.display = "none";
-            el.appendChild(opt);
-            answerCandidates.push(opt);
-          }
+          const combined = `${letter}) ${ocr}`;
+          const opt = document.createElement("div");
+          opt.innerText = combined;
+          opt.style.display = "none";
+          el.appendChild(opt);
+          answerCandidates.push(opt);
         }
       }
+
 
       if (questionCandidates.length > 0 && answerCandidates.length >= 2) {
         const questionText = questionCandidates[0].innerText.trim();
