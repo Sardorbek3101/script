@@ -104,18 +104,17 @@
     if (ocr) buffer.push(ocr.trim());
   }
 
-  // Комбинируем пары: [A), вариант], [B), вариант] и т.д.
-  for (let i = 0; i < buffer.length - 1; i++) {
-    const first = buffer[i];
-    const second = buffer[i + 1];
-    if (/^[A-ZА-Я]\)?\s*$/.test(first) && second.length > 0) {
-      const combined = `${first} ${second}`.trim();
-      const opt = document.createElement("div");
-      opt.innerText = combined;
-      opt.style.display = "none";
-      el.appendChild(opt);
-      answerCandidates.push(opt);
-      i++; // пропускаем следующий, т.к. уже использован
+  // Попытка выделить A) текст, B) текст и т.д.
+  for (const text of buffer) {
+    const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
+    for (const line of lines) {
+      if (/^[A-ZА-Я]\)?[\s:]/.test(line)) {
+        const opt = document.createElement("div");
+        opt.innerText = line;
+        opt.style.display = "none";
+        el.appendChild(opt);
+        answerCandidates.push(opt);
+      }
     }
   }
 }
