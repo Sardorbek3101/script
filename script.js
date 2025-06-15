@@ -95,36 +95,30 @@
       }
 
       if (answerCandidates.length < 2) {
-        const imgs = el.querySelectorAll("img");
-        for (const img of imgs) {
-          const ocr = await recognizeImageText(img.src);
-          if (!ocr) continue;
+  const imgs = el.querySelectorAll("img");
+  let buffer = [];
+  for (const img of imgs) {
+    const ocr = await recognizeImageText(img.src);
+    console.log("🖼️ OCR-ответ варианта:", ocr);
+    if (!ocr) continue;
 
-          // 1. Попытка найти "A) ..." и т.п.
-          const match = ocr.match(/^([A-ZА-Я])\)?\s+(.*)/);
-          if (match) {
-            const opt = document.createElement("div");
-            opt.innerText = `${match[1]}) ${match[2]}`;
-            opt.style.display = "none";
-            el.appendChild(opt);
-            answerCandidates.push(opt);
-          } else {
-            // 2. Иначе: разбиваем по строкам и ищем A/B/C/D вручную
-            const lines = ocr.split(/\n+/);
-            for (const line of lines) {
-              const lineMatch = line.trim().match(/^([A-ZА-Я])\)?\s+(.*)/);
-              if (lineMatch) {
-                const opt = document.createElement("div");
-                opt.innerText = `${lineMatch[1]}) ${lineMatch[2]}`;
-                opt.style.display = "none";
-                el.appendChild(opt);
-                answerCandidates.push(opt);
-              }
-            }
-          }
-        }
-      }
+    // Добавляем в буфер — возможно, буквы и ответы распознаны по отдельности
+    buffer.push(ocr.trim());
+  }
 
+  // Попробуем соединить по парам: [A) текст], [B) текст], ...
+  for (let i = 0; i < buffer.length; i++) {
+    const combined = buffer[i] + (buffer[i + 1] ? " " + buffer[i + 1] : "");
+    if (/^[A-ZА-Я]\)?\s+/.test(combined)) {
+      const opt = document.createElement("div");
+      opt.innerText = combined;
+      opt.style.display = "none";
+      el.appendChild(opt);
+      answerCandidates.push(opt);
+      i++; // пропустить следующий, он уже был частью варианта
+    }
+  }
+}
 
       if (questionCandidates.length > 0 && answerCandidates.length >= 2) {
         const questionText = questionCandidates[0].innerText.trim();
