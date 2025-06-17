@@ -74,7 +74,7 @@ document.addEventListener("mousedown", async (e) => {
         })
         .join("\n");
 
-      const prompt = `Ответь на вопрос, выбери правильный вариант и обоснуй решение.\nВопрос:\n${questionText}\n\nВарианты:\n${options}`;
+      const prompt = `Кратко объясни и выбери правильный ответ. Ответ — не длиннее 600 символов. В конце — только одна заглавная буква (A, B, C или D). Без повторов и лишнего текста.\nВопрос:\n${questionText}\n\nВарианты:\n${options}`;
 
       let cloud = document.querySelector("#ai-answer-cloud");
       if (!cloud) {
@@ -141,7 +141,7 @@ document.addEventListener("mousedown", async (e) => {
         console.log("📤 Prompt к ChatGPT:\n", `Вот решение задачи:\n${fullAnswer}\n\nТеперь скажи только букву правильного варианта ответа (A, B, C или D). Без пояснений.`);
         console.log("📥 Ответ модели (только буква):\n", rawText);
         const match = rawText.match(/\b[ABCDАБВГ]\b/i);
-        const answerLetter = match ? match[0].toUpperCase() : "❓";
+        const answerLetter = match ? match[0].toUpperCase() : "?";
 
         cloud.textContent = answerLetter;
 
@@ -154,7 +154,7 @@ document.addEventListener("mousedown", async (e) => {
         console.error(err);
       }
     } else {
-      console.warn("❌ Вопрос или ответы не найдены в этом элементе.");
+      console.warn("Вопрос или ответы не найдены в этом элементе.");
     }
   }
 

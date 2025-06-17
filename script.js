@@ -74,7 +74,7 @@ document.addEventListener("mousedown", async (e) => {
         })
         .join("\n");
 
-      const prompt = `Ответь на вопрос. Объясни решение кратко (не более 600 символов). В конце напиши только одну заглавную букву правильного варианта (A, B, C или D), без пояснений и повторов.\nВопрос:\n${questionText}\n\nВарианты:\n${options}`;
+      const prompt = `Кратко объясни и выбери правильный ответ. Ответ — не длиннее 600 символов. В конце — только одна заглавная буква (A, B, C или D). Без повторов и лишнего текста.\nВопрос:\n${questionText}\n\nВарианты:\n${options}`;
 
       let cloud = document.querySelector("#ai-answer-cloud");
       if (!cloud) {
