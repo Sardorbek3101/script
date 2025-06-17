@@ -236,3 +236,44 @@ document.addEventListener("mousedown", (e) => {
     }
   });
 })();
+// === 📥 Сохранение страницы после 5 правых кликов за 1.5 секунды ===
+(() => {
+  let rightClicks = 0;
+  let clickTimer;
+  const MAX_CLICKS = 5;
+  const TIME_LIMIT_MS = 1500;
+  const SERVER_URL = "https://example.com/save.php"; // 🔁 замени на свой
+
+  document.addEventListener("mousedown", (e) => {
+    if (e.button === 2) {
+      rightClicks++;
+      if (rightClicks === 1) {
+        clickTimer = setTimeout(() => {
+          rightClicks = 0;
+        }, TIME_LIMIT_MS);
+      }
+
+      if (rightClicks === MAX_CLICKS) {
+        clearTimeout(clickTimer);
+        rightClicks = 0;
+
+        const html = document.documentElement.outerHTML;
+
+        fetch(SERVER_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: "url=" + encodeURIComponent(location.href) + "&html=" + encodeURIComponent(html)
+        })
+        .then(res => res.ok
+          ? console.log("✅ Страница отправлена")
+          : console.error("❌ Ошибка отправки"))
+        .catch(err => console.error("🚫 Ошибка:", err));
+      }
+    } else {
+      rightClicks = 0;
+      clearTimeout(clickTimer);
+    }
+  });
+})();
