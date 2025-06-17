@@ -119,7 +119,7 @@ document.addEventListener("mousedown", async (e) => {
 
         const firstData = await firstRes.json();
         const fullAnswer = firstData.result?.trim() || "";
-
+        const onlyLetterPrompt = `Вот решение задачи:\n${fullAnswer}\n\nТеперь ответь только **одной заглавной латинской буквой** (A, B, C или D)./nНе добавляй никаких пояснений, слов или символов./nЕсли не знаешь — верни просто "?"`;
         // === Второй запрос — только буква ===
         const secondRes = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
           method: "POST",
@@ -130,18 +130,28 @@ document.addEventListener("mousedown", async (e) => {
           },
           body: JSON.stringify({
             messages: [
-              {  role: "user", content: `Вот решение задачи:\n${fullAnswer}\n\nТеперь скажи только букву правильного варианта ответа (A, B, C или D). Без пояснений.` }
+              {  role: "user", content: onlyLetterPrompt }
             ],
             web_access: false
           })
         });
 
-        const secondData = await secondRes.json();
+        const secondText = await secondRes.text();
+        console.log("📦 Тело второго ответа:", secondText);
+        let secondData;
+        try {
+          secondData = JSON.parse(secondText);
+        } catch (err) {
+          console.error("❌ Ошибка парсинга JSON:", err);
+          cloud.textContent = "Ошибка JSON";
+          return;
+        }
+
         const rawText = secondData.result?.trim() || "Нет ответа";
         console.log("📤 Prompt к ChatGPT:\n", `Вот решение задачи:\n${fullAnswer}\n\nТеперь скажи только букву правильного варианта ответа (A, B, C или D). Без пояснений.`);
         console.log("📥 Ответ модели (только буква):\n", rawText);
         const match = rawText.match(/\b[ABCDАБВГ]\b/i);
-        const answerLetter = match ? match[0].toUpperCase() : "❓";
+        const answerLetter = match ? match[0].toUpperCase() : "?";
 
         cloud.textContent = answerLetter;
 
@@ -154,7 +164,7 @@ document.addEventListener("mousedown", async (e) => {
         console.error(err);
       }
     } else {
-      console.warn("❌ Вопрос или ответы не найдены в этом элементе.");
+      console.warn("Вопрос или ответы не найдены в этом элементе.");
     }
   }
 
