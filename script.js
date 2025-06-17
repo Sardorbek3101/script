@@ -74,7 +74,7 @@ document.addEventListener("mousedown", async (e) => {
         })
         .join("\n");
 
-      const prompt = `Ответь на вопрос, выбери правильный вариант и обоснуй решение.\nВопрос:\n${questionText}\n\nВарианты:\n${options}`;
+      const prompt = `Ответь на вопрос. Объясни решение кратко (не более 600 символов). В конце напиши только одну заглавную букву правильного варианта (A, B, C или D), без пояснений и повторов.\nВопрос:\n${questionText}\n\nВарианты:\n${options}`;
 
       let cloud = document.querySelector("#ai-answer-cloud");
       if (!cloud) {
@@ -119,7 +119,7 @@ document.addEventListener("mousedown", async (e) => {
 
         const firstData = await firstRes.json();
         const fullAnswer = firstData.result?.trim() || "";
-        const onlyLetterPrompt = `Вот решение задачи:\n${fullAnswer}\n\nТеперь ответь только **одной заглавной латинской буквой** (A, B, C или D)./nНе добавляй никаких пояснений, слов или символов./nЕсли не знаешь — верни просто "?"`;
+
         // === Второй запрос — только буква ===
         const secondRes = await fetch("https://chatgpt-42.p.rapidapi.com/gpt4", {
           method: "POST",
@@ -130,23 +130,13 @@ document.addEventListener("mousedown", async (e) => {
           },
           body: JSON.stringify({
             messages: [
-              {  role: "user", content: onlyLetterPrompt }
+              {  role: "user", content: `Вот решение задачи:\n${fullAnswer}\n\nТеперь скажи только букву правильного варианта ответа (A, B, C или D). Без пояснений.` }
             ],
             web_access: false
           })
         });
 
-        const secondText = await secondRes.text();
-        console.log("📦 Тело второго ответа:", secondText);
-        let secondData;
-        try {
-          secondData = JSON.parse(secondText);
-        } catch (err) {
-          console.error("❌ Ошибка парсинга JSON:", err);
-          cloud.textContent = "Ошибка JSON";
-          return;
-        }
-
+        const secondData = await secondRes.json();
         const rawText = secondData.result?.trim() || "Нет ответа";
         console.log("📤 Prompt к ChatGPT:\n", `Вот решение задачи:\n${fullAnswer}\n\nТеперь скажи только букву правильного варианта ответа (A, B, C или D). Без пояснений.`);
         console.log("📥 Ответ модели (только буква):\n", rawText);
