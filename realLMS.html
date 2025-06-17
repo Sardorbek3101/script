@@ -1,26 +1,37 @@
-<!DOCTYPE html>
-<!-- saved from url=(0028)https://darlingx.com/fk/lms/ -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        
+<html lang="uzl"><head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="LMS">
         <meta name="keywords" content="admin,TUIT">
         <meta name="author" content="stacks">
+        <meta name="csrf-token" content="nU2KFq2sLyRKtouLZuXXjaO8RkRe2VL6JUdWyJFu">
         <!-- The above 6 meta tags *must* come first in the head; any other head content must come *after* these tags -->    
         <!-- Title -->
         <title>LMS</title>
         <!-- Styles -->
-
-        <link href="./LMS_files/bootstrap.min.css" rel="stylesheet">
-        <link href="./LMS_files/font-awesome.min.css" rel="stylesheet">
-        <link href="./LMS_files/style_002.css" rel="stylesheet">
         
-        <link href="./LMS_files/switchery.min.css" rel="stylesheet">
-        <link href="./LMS_files/datepicker3.css" rel="stylesheet">
-        <link href="./LMS_files/datepicker.css" rel="stylesheet">
-        <link rel="stylesheet" href="./LMS_files/select2.min.css">
-        <link rel="stylesheet" href="./LMS_files/metisMenu.min.css">
+
+        <link rel="shortcut icon" href="https://lms.tuit.uz/assets/images/favicon.ico" type="image/x-icon">
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="57x57" href="https://lms.tuit.uz/assets/images/apple-touch-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="https://lms.tuit.uz/assets/images/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="https://lms.tuit.uz/assets/images/apple-touch-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="https://lms.tuit.uz/assets/images/apple-touch-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="https://lms.tuit.uz/assets/images/apple-touch-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="https://lms.tuit.uz/assets/images/apple-touch-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="https://lms.tuit.uz/assets/images/apple-touch-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="https://lms.tuit.uz/assets/images/apple-touch-icon-180x180.png">
+
+        <link href="https://lms.tuit.uz/assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://lms.tuit.uz/assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+        <link href="https://lms.tuit.uz/assets/plugins/icomoon/style.css" rel="stylesheet">
+        
+        <link href="https://lms.tuit.uz/assets/plugins/switchery/switchery.min.css" rel="stylesheet">
+        <link href="https://lms.tuit.uz/assets/plugins/bootstrap-datepicker/css/datepicker3.css" rel="stylesheet">
+        <link href="https://lms.tuit.uz/assets/plugins/bootstrap-datepicker/css/datepicker.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://lms.tuit.uz/assets/css/select2.min.css">
+        <link rel="stylesheet" href="https://lms.tuit.uz/assets/css/metisMenu.min.css">
     
             <style>
         .over-x {
@@ -39,7 +50,9 @@
             background: #f1f1f1;
             border-radius: 4px
         }
-
+        .test-radio[type="radio"]:checked + label, .test-radio[type="radio"]:not(:checked) + label{
+            height: auto !important;
+        }
         /* Handle */
         .over-x::-webkit-scrollbar-thumb {
             background: rgb(29, 45, 91) !important;
@@ -86,11 +99,11 @@
     </style>
 
         <!-- Theme Styles -->
-        <link href="./LMS_files/space.css" rel="stylesheet">
-        <link href="./LMS_files/custom.css" rel="stylesheet">
-        <link href="./LMS_files/fonts.css" rel="stylesheet">
-        <link href="./LMS_files/toastify.min.css" rel="stylesheet" type="text/css">
-        <link href="./LMS_files/style.css" rel="stylesheet">
+        <link href="https://lms.tuit.uz/assets/css/space.css?v=1.4" rel="stylesheet">
+        <link href="https://lms.tuit.uz/assets/css/custom.css?v=1.2" rel="stylesheet">
+        <link href="https://lms.tuit.uz/assets/css/fonts.css" rel="stylesheet">
+        <link href="https://lms.tuit.uz/assets/css/toastify.min.css?v=1.0" rel="stylesheet" type="text/css">
+        <link href="https://lms.tuit.uz/assets/css/style.css?v=1.9" rel="stylesheet">
 
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -98,21 +111,23 @@
         <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
-</head>
+        <style>
+        @media (max-width: 768px) { .server-time-t4562h {width: 140px!important; font-size:11px!important; margin-top: -8px!important;} }</style>
+    </head>
     <body class="page-sidebar-fixed page-header-fixed">        
         <!-- Page Container -->
         <div class="page-container">          
             <!-- Page Sidebar -->
             <div class="page-sidebar">              
-                <a class="logo-box" href="https://lms.tuit.uz/">
+                <a class="logo-box" href="/">
                     <div>
-                        <img src="./LMS_files/logo-md.png" alt="" height="40">
+                        <img src="https://lms.tuit.uz/assets/images/logo-md.png" alt="" height="40">
                         <span>Muhammad al-Xorazmiy nomidagi Toshkent Axborot Texnologiyalari Universiteti</span>
                     </div>
                     <i class="icon-radio_button_checked" id="fixed-sidebar-toggle-button"></i>
                     <i class="icon-close" id="sidebar-toggle-button-close"></i>
                 </a>
-                <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 625.2px;"><div class="page-sidebar-inner" style="overflow: hidden; width: auto; height: 625.2px;">
+                <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 951.111px;"><div class="page-sidebar-inner" style="overflow: hidden; width: auto; height: 951.111px;">
                     <div class="page-sidebar-menu" id="sidebar-menu">
                         <ul class="accordion-menu metismenu" id="side-menu"> 
                         <li>
@@ -121,41 +136,20 @@
                             </a>
                         </li>
                         
-                                                                        
-                                                                        
-                                                                        
-                                                                        
-                                                                        
-                                                                        
-                                                                        
-                                                                        
-                                                                        
-                                                                        
-                                                                        
-                                                                        
-                                                                        
-                                                                        
-                                                                        
-                                                                        
-                                                                        
-                                                                        
-                                                                        
-            <li class="menu-divider"></li>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <li class="menu-divider"></li>
 <li>
-    <div class="page-sidebar__title">Итоговый</div>
+    <div class="page-sidebar__title">Yakuniy</div>
 </li>
 <li>
     <a href="https://lms.tuit.uz/tester/students">
         <i class="menu-icon fa fa-list"></i>
-        <span>Потоки</span>
+        <span>Patoklar</span>
     </a>
 </li>
-                                                                        
-                                                                        
-                      
+                                                                                                                                                                      
                         </ul>
                     </div>
-                </div><div class="slimScrollBar" style="background: rgb(204, 204, 204); width: 5px; position: absolute; top: -40.2px; opacity: 0.2; display: none; border-radius: 0px; z-index: 99; right: 0px; height: 625.4px;"></div><div class="slimScrollRail" style="width: 5px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 0px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 0px;"></div></div>
+                </div><div class="slimScrollBar" style="background: rgb(204, 204, 204); width: 5px; position: absolute; top: -0.110855px; opacity: 0.2; display: none; border-radius: 0px; z-index: 99; right: 0px; height: 951.222px;"></div><div class="slimScrollRail" style="width: 5px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 0px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 0px;"></div></div>
             </div><!-- /Page Sidebar -->
             
             <!-- Page Content -->
@@ -168,7 +162,7 @@
                             <div class="navbar-header">
                                 <div class="logo-sm">
                                     <a href="javascript:void(0)" id="sidebar-toggle-button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-align-left"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg></a>
-                                    <a class="logo-box" href="https://lms.tuit.uz/">
+                                    <a class="logo-box" href="https://lms.tuit.uz">
                                         <span></span>
                                     </a>
                                 </div>
@@ -181,8 +175,8 @@
                                 <ul class="nav navbar-nav navbar-right">
                                     <li class="dropdown">
                                         <p href="#" class="text-right text-blue server-time">
-                                            <span>Время сервера</span><br>
-                                           <strong>23.01.2024 |  15:30</strong>
+                                            <span>Server vaqti</span><br>
+                                           <strong>17.06.2025 |  11:40</strong>
                                         </p>
                                     </li>									
                                     
@@ -196,8 +190,9 @@
 										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-video"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
 									</a></li>
                                     <li class="dropdown">
-                                        <a href="javascript:void(0)" class="dropdown-toggle dropdown-float" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">                                          
-                                          <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" version="1.1" width="31" height="31" x="0" y="0" viewBox="0 0 460.8 460.8" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g>
+                                        <a href="javascript:void(0)" class="dropdown-toggle dropdown-float" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">  
+                                                                                        
+                                          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" version="1.1" width="31" height="31" x="0" y="0" viewBox="0 0 460.8 460.8" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g>
                                             <g xmlns="http://www.w3.org/2000/svg">
                                                 <g>
                                                     <path d="M230.432,0c-65.829,0-119.641,53.812-119.641,119.641s53.812,119.641,119.641,119.641s119.641-53.812,119.641-119.641    S296.261,0,230.432,0z" fill="#1d2d5b" data-original="#000000" style="" class=""></path>
@@ -209,16 +204,16 @@
                                                 </g>
                                             </g>
                                            </g></svg>
-                                        </a>
+                                                                                   </a>
                                         <ul class="dropdown-menu dropdown-content">
                                             <li>
                                                 <div style="padding:13px 10px; background-color: rgba(29,45,91); color: #fff">
-                                                    Tester5 Tester5
+                                                    Tester10 Tester10
                                                 </div>
                                             </li>
-                                            <li><a href="https://lms.tuit.uz/profile/password"><i class="fa fa-cog"></i>Настройки профиля</a></li>
-                                            <li><a href="https://lms.tuit.uz/logout" onclick="event.preventDefault(); document.getElementById(&#39;logout-form&#39;).submit();"><i class="fa fa-sign-out"></i>Выйти</a></li>
-                                            <form id="logout-form" method="POST" style="display: none;"><input type="hidden" name="_token"></form>
+                                            <li><a href="https://lms.tuit.uz/profile/password"><i class="fa fa-cog"></i>Profil sozlamalari</a></li>
+                                            <li><a href="https://lms.tuit.uz/logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa fa-sign-out"></i>Chiqish</a></li>
+                                            <form id="logout-form" action="https://lms.tuit.uz/logout" method="POST" style="display: none;"><input type="hidden" name="_token" value="nU2KFq2sLyRKtouLZuXXjaO8RkRe2VL6JUdWyJFu" readonly="readonly"></form>
                                                                                     </ul>
                                     </li>                            
                                 </ul>
@@ -242,883 +237,747 @@
                 </div>
             </div>
         </div>
-        <form method="POST" accept-charset="UTF-8" id="finalTestForm"><input name="_token" type="hidden">
+        <form method="POST" action="https://lms.tuit.uz/tester/test" accept-charset="UTF-8" id="finalTestForm"><input name="_token" type="hidden" value="nU2KFq2sLyRKtouLZuXXjaO8RkRe2VL6JUdWyJFu" readonly="readonly">
         <div class="panel">
             <div class="row m-b-sm">
                 <div class="col-xs-6">
                     <h1 class="breadcrumb-header mt-0">
-                        Программирование 1-а - <span class="text-info">TEST (ignore)</span>
+                        Ma'lumotlar tuzilmasi va algoritmlar (4 kr) - <span class="text-info">Olimjonov Sardorbek Olimjonovich</span>
                         
                     </h1>
                 </div>
                 <div class="col-xs-6 text-right">
                     <div class="alert alert-success alert-change">
-                        <i class="fa fa-clock-o"></i> <span id="timer">00:18:13</span>
+                        <i class="fa fa-clock-o"></i> <span id="timer">00:59:26</span>
                     </div>
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#finishTestModal">Закончить экзамен</button>
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#finishTestModal">Imtihonni tugatish</button>
                     
                 </div>
             </div>
             <div class="tabpanel">
                 <div class="over-x">
                     <ul class="btn-group d-flex test-nav" role="tablist" aria-label="First group">
-                                                    <li role="presentation" class="btn p-0 btn-primary active">
-                                <a href="#tab1" role="tab" data-toggle="tab" aria-expanded="true">1</a>
+                                                    <li role="presentation" class="btn btn-default p-0 active">
+                                <a href="#tab1" role="tab" data-toggle="tab">1</a>
                             </li>
-                                                    <li role="presentation" class="btn p-0 btn-primary">
-                                <a href="#tab2" role="tab" data-toggle="tab" aria-expanded="false">2</a>
+                                                    <li role="presentation" class="btn btn-default p-0">
+                                <a href="#tab2" role="tab" data-toggle="tab">2</a>
                             </li>
-                                                    <li role="presentation" class="btn p-0 btn-primary">
-                                <a href="#tab3" role="tab" data-toggle="tab" aria-expanded="false">3</a>
+                                                    <li role="presentation" class="btn btn-default p-0">
+                                <a href="#tab3" role="tab" data-toggle="tab">3</a>
                             </li>
-                                                    <li role="presentation" class="btn p-0 btn-primary">
-                                <a href="https://darlingx.com/fk/lms/#tab4" role="tab" data-toggle="tab" aria-expanded="false">4</a>
+                                                    <li role="presentation" class="btn btn-default p-0">
+                                <a href="#tab4" role="tab" data-toggle="tab">4</a>
                             </li>
-                                                    <li role="presentation" class="btn p-0 btn-primary">
-                                <a href="https://darlingx.com/fk/lms/#tab5" role="tab" data-toggle="tab" aria-expanded="false">5</a>
+                                                    <li role="presentation" class="btn btn-default p-0">
+                                <a href="#tab5" role="tab" data-toggle="tab">5</a>
                             </li>
-                                                    <li role="presentation" class="btn p-0 btn-primary">
-                                <a href="https://darlingx.com/fk/lms/#tab6" role="tab" data-toggle="tab" aria-expanded="false">6</a>
+                                                    <li role="presentation" class="btn btn-default p-0">
+                                <a href="#tab6" role="tab" data-toggle="tab">6</a>
                             </li>
-                                                    <li role="presentation" class="btn p-0 btn-primary">
-                                <a href="https://darlingx.com/fk/lms/#tab7" role="tab" data-toggle="tab" aria-expanded="false">7</a>
+                                                    <li role="presentation" class="btn btn-default p-0">
+                                <a href="#tab7" role="tab" data-toggle="tab">7</a>
                             </li>
-                                                    <li role="presentation" class="btn p-0 btn-primary">
-                                <a href="https://darlingx.com/fk/lms/#tab8" role="tab" data-toggle="tab" aria-expanded="false">8</a>
+                                                    <li role="presentation" class="btn btn-default p-0">
+                                <a href="#tab8" role="tab" data-toggle="tab">8</a>
                             </li>
-                                                    <li role="presentation" class="btn p-0 btn-primary">
-                                <a href="https://darlingx.com/fk/lms/#tab9" role="tab" data-toggle="tab" aria-expanded="false">9</a>
+                                                    <li role="presentation" class="btn btn-default p-0">
+                                <a href="#tab9" role="tab" data-toggle="tab">9</a>
                             </li>
-                                                    <li role="presentation" class="btn p-0 btn-primary">
-                                <a href="https://darlingx.com/fk/lms/#tab10" role="tab" data-toggle="tab" aria-expanded="false">10</a>
+                                                    <li role="presentation" class="btn btn-default p-0">
+                                <a href="#tab10" role="tab" data-toggle="tab">10</a>
                             </li>
-                                                    <li role="presentation" class="btn p-0 btn-primary">
-                                <a href="https://darlingx.com/fk/lms/#tab11" role="tab" data-toggle="tab" aria-expanded="false">11</a>
+                                                    <li role="presentation" class="btn btn-default p-0">
+                                <a href="#tab11" role="tab" data-toggle="tab">11</a>
                             </li>
-                                                    <li role="presentation" class="btn p-0 btn-primary">
-                                <a href="https://darlingx.com/fk/lms/#tab12" role="tab" data-toggle="tab" aria-expanded="false">12</a>
+                                                    <li role="presentation" class="btn btn-default p-0">
+                                <a href="#tab12" role="tab" data-toggle="tab">12</a>
                             </li>
-                                                    <li role="presentation" class="btn p-0 btn-primary">
-                                <a href="https://darlingx.com/fk/lms/#tab13" role="tab" data-toggle="tab" aria-expanded="false">13</a>
+                                                    <li role="presentation" class="btn btn-default p-0">
+                                <a href="#tab13" role="tab" data-toggle="tab">13</a>
                             </li>
-                                                    <li role="presentation" class="btn p-0 btn-primary">
-                                <a href="https://darlingx.com/fk/lms/#tab14" role="tab" data-toggle="tab" aria-expanded="false">14</a>
+                                                    <li role="presentation" class="btn btn-default p-0">
+                                <a href="#tab14" role="tab" data-toggle="tab">14</a>
                             </li>
-                                                    <li role="presentation" class="btn p-0 btn-primary">
-                                <a href="https://darlingx.com/fk/lms/#tab15" role="tab" data-toggle="tab" aria-expanded="false">15</a>
+                                                    <li role="presentation" class="btn btn-default p-0">
+                                <a href="#tab15" role="tab" data-toggle="tab">15</a>
                             </li>
-                                                    <li role="presentation" class="btn p-0 btn-primary">
-                                <a href="https://darlingx.com/fk/lms/#tab16" role="tab" data-toggle="tab" aria-expanded="false">16</a>
+                                                    <li role="presentation" class="btn btn-default p-0">
+                                <a href="#tab16" role="tab" data-toggle="tab">16</a>
                             </li>
-                                                    <li role="presentation" class="btn p-0 btn-primary">
-                                <a href="https://darlingx.com/fk/lms/#tab17" role="tab" data-toggle="tab" aria-expanded="false">17</a>
-                            </li>
-                                                    <li role="presentation" class="btn p-0 btn-primary">
-                                <a href="https://darlingx.com/fk/lms/#tab18" role="tab" data-toggle="tab" aria-expanded="false">18</a>
-                            </li>
-                                                    <li role="presentation" class="btn p-0 btn-primary">
-                                <a href="https://darlingx.com/fk/lms/#tab19" role="tab" data-toggle="tab" aria-expanded="false">19</a>
-                            </li>
-                                                    <li role="presentation" class="btn p-0 btn-primary">
-                                <a href="https://darlingx.com/fk/lms/#tab20" role="tab" data-toggle="tab" aria-expanded="false">20</a>
+                                                    <li role="presentation" class="btn btn-default p-0">
+                                <a href="#tab17" role="tab" data-toggle="tab">17</a>
                             </li>
                                             </ul>
                 </div>
                 <div class="tab-content">
-                                            <div class="test-table tab-pane fade active in" role="tabpanel" id="tab1">
+                                            <div class="table-test tab-pane fade in active" role="tabpanel" id="tab1">
                             <div class="test-question">
-                                <p>Зависимость показателя преломления света от его длины волны, это –</p>
-<p>&nbsp;</p>
+                                <p>Какое ключевое слово указывает, что целая переменная не может принимать отрицательные значения?</p>
                             </div>
-                            <div class="label label-info">Балл:2</div>
+                            <div class="label label-info">Ball:2</div>
                             <div class="test-content  m-t-xs">
-                                <ul class="test-answers testing">
+                                <ul class="answers-test testing">
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test1-a" name="answers[1]" value="1">
+                                            <input type="radio" class="test-radio" id="test1-a" name="answers[1]" value="1" readonly="readonly">
                                             <label for="test1-a">
                                                 <span class="test-variant">a</span>
-                                                <p>поляризация</p>
+                                                <p>positive</p>
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test1-b" name="answers[1]" value="2">
+                                            <input type="radio" class="test-radio" id="test1-b" name="answers[1]" value="2" readonly="readonly">
                                             <label for="test1-b">
                                                 <span class="test-variant">b</span>
-                                                <p>дисперсия</p>
+                                                <p>extern</p>
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test1-c" name="answers[1]" value="3">
+                                            <input type="radio" class="test-radio" id="test1-c" name="answers[1]" value="3" readonly="readonly">
                                             <label for="test1-c">
                                                 <span class="test-variant">c</span>
-                                                <p>фотоэффект</p>
+                                                <p>unsigned</p>
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test1-d" name="answers[1]" value="4">
+                                            <input type="radio" class="test-radio" id="test1-d" name="answers[1]" value="4" readonly="readonly">
                                             <label for="test1-d">
                                                 <span class="test-variant">d</span>
-                                                <p>интерференция&nbsp;&nbsp;</p>
+                                                <p>signed</p>
                                             </label>
                                         </li>
                                                                     </ul>
                             </div>
-                            <small><i>Savol muallifi: Abdullayeva Zamira Shamshaddinovna</i></small>
+                            <small><i>Savol muallifi: Kerimov Komil Fikratovich</i></small>
                         </div>
-                                            <div class="test-table tab-pane fade" role="tabpanel" id="tab2">
+                                            <div class="table-test tab-pane fade in" role="tabpanel" id="tab2">
                             <div class="test-question">
-                                <p>Выберите ответ, правильно дополняющий предложение. Скорость распространения световых волн в вакууме ... .<br> double x=1,y;<br> y=-atan(x) + 8./3 + 2 + atan(1/x) ;<br> printf(".4%f\n",y);</p>
+                                <p>Определите эффективность поиска хеширования и рехеширования, выраженная в нотации большого О </p>
                             </div>
-                            <div class="label label-info">Балл:2</div>
+                            <div class="label label-info">Ball:2</div>
                             <div class="test-content  m-t-xs">
-                                <ul class="test-answers testing">
+                                <ul class="answers-test testing">
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test2-a" name="answers[2]" value="1">
+                                            <input type="radio" class="test-radio" id="test2-a" name="answers[2]" value="1" readonly="readonly">
                                             <label for="test2-a">
                                                 <span class="test-variant">a</span>
-                                                <p>может быть произвольной</p>
+                                                <p>O(N<sup>2</sup>)</p>
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test2-b" name="answers[2]" value="2">
+                                            <input type="radio" class="test-radio" id="test2-b" name="answers[2]" value="2" readonly="readonly">
                                             <label for="test2-b">
                                                 <span class="test-variant">b</span>
-                                                <p>зависит от частоты</p>
+                                                <p>O(1)</p>
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test2-c" name="answers[2]" value="3">
+                                            <input type="radio" class="test-radio" id="test2-c" name="answers[2]" value="3" readonly="readonly">
                                             <label for="test2-c">
                                                 <span class="test-variant">c</span>
-                                                <p>однакова для всех световых волн</p>
+                                                <p>O(logN)</p>
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test2-d" name="answers[2]" value="4">
+                                            <input type="radio" class="test-radio" id="test2-d" name="answers[2]" value="4" readonly="readonly">
                                             <label for="test2-d">
                                                 <span class="test-variant">d</span>
-                                                <p>зависит от энергии</p>
+                                                <p>O(N)</p>
                                             </label>
                                         </li>
                                                                     </ul>
                             </div>
-                            <small><i>Savol muallifi: Abdullayeva Zamira Shamshaddinovna</i></small>
+                            <small><i>Savol muallifi: Kerimov Komil Fikratovich</i></small>
                         </div>
-                                            <div class="test-table tab-pane fade" role="tabpanel" id="tab3">
+                                            <div class="table-test tab-pane fade in" role="tabpanel" id="tab3">
                             <div class="test-question">
-                                <p>Переведите в электронвольты энергию 6,4‧10-18 Дж.</p>
+                                <p> <strong>Программные объекты, которые возникают уже в процессе выполнения программы или размер значений которых определяется при выполнении программы, называются </strong></p>
                             </div>
-                            <div class="label label-info">Балл:2</div>
+                            <div class="label label-info">Ball:2</div>
                             <div class="test-content  m-t-xs">
-                                <ul class="test-answers testing">
+                                <ul class="answers-test testing">
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test3-a" name="answers[3]" value="1">
+                                            <input type="radio" class="test-radio" id="test3-a" name="answers[3]" value="1" readonly="readonly">
                                             <label for="test3-a">
                                                 <span class="test-variant">a</span>
-                                                <p>40</p>
+                                                <p> Статические структуры данных</p>
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test3-b" name="answers[3]" value="2">
+                                            <input type="radio" class="test-radio" id="test3-b" name="answers[3]" value="2" readonly="readonly">
                                             <label for="test3-b">
                                                 <span class="test-variant">b</span>
-                                                <p>400</p>
+                                                <p> Полустатические структуры данных</p>
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test3-c" name="answers[3]" value="3">
+                                            <input type="radio" class="test-radio" id="test3-c" name="answers[3]" value="3" readonly="readonly">
                                             <label for="test3-c">
                                                 <span class="test-variant">c</span>
-                                                <p>4</p>
+                                                <p> Динамические структуры данных</p>
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test3-d" name="answers[3]" value="4">
+                                            <input type="radio" class="test-radio" id="test3-d" name="answers[3]" value="4" readonly="readonly">
                                             <label for="test3-d">
                                                 <span class="test-variant">d</span>
-                                                <p>0,4</p>
+                                                <p> Рекурсивные структуры данных</p>
                                             </label>
                                         </li>
                                                                     </ul>
                             </div>
-                            <small><i>Savol muallifi: Abdullayeva Zamira Shamshaddinovna</i></small>
+                            <small><i>Savol muallifi: Kerimov Komil Fikratovich</i></small>
                         </div>
-                                            <div class="test-table tab-pane fade" role="tabpanel" id="tab4">
+                                            <div class="table-test tab-pane fade in" role="tabpanel" id="tab4">
                             <div class="test-question">
-                                <p>Оптически активными называются вещества …</p>
+                                <p> Какой из вариантов ответа обозначает функцию извлечения верхнего элемента стека</p>
                             </div>
-                            <div class="label label-info">Балл:2</div>
+                            <div class="label label-info">Ball:2</div>
                             <div class="test-content  m-t-xs">
-                                <ul class="test-answers testing">
+                                <ul class="answers-test testing">
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test4-a" name="answers[4]" value="1">
+                                            <input type="radio" class="test-radio" id="test4-a" name="answers[4]" value="1" readonly="readonly">
                                             <label for="test4-a">
                                                 <span class="test-variant">a</span>
-                                                <p>способные поглощать один из лучей при двойном лучепреломлении</p>
+                                                <p> Empty</p>
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test4-b" name="answers[4]" value="2">
+                                            <input type="radio" class="test-radio" id="test4-b" name="answers[4]" value="2" readonly="readonly">
                                             <label for="test4-b">
                                                 <span class="test-variant">b</span>
-                                                <p>при прохождении через которые естественный свет становится линейно поляризованным</p>
+                                                <p> Pop</p>
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test4-c" name="answers[4]" value="3">
+                                            <input type="radio" class="test-radio" id="test4-c" name="answers[4]" value="3" readonly="readonly">
                                             <label for="test4-c">
                                                 <span class="test-variant">c</span>
-                                                <p>способные вращать плоскость поляризации в отсутствии внешних воздействий</p>
+                                                <p> Push</p>
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test4-d" name="answers[4]" value="4">
+                                            <input type="radio" class="test-radio" id="test4-d" name="answers[4]" value="4" readonly="readonly">
                                             <label for="test4-d">
                                                 <span class="test-variant">d</span>
-                                                <p>способные вращать плоскость поляризации под действием магнитного поля</p>
+                                                <p> Top</p>
                                             </label>
                                         </li>
                                                                     </ul>
                             </div>
-                            <small><i>Savol muallifi: Abdullayeva Zamira Shamshaddinovna</i></small>
+                            <small><i>Savol muallifi: Kerimov Komil Fikratovich</i></small>
                         </div>
-                                            <div class="test-table tab-pane fade" role="tabpanel" id="tab5">
+                                            <div class="table-test tab-pane fade in" role="tabpanel" id="tab5">
                             <div class="test-question">
-                                <p>Найти  массу  (кг) фотона, если соответствующая ему длина волны  λ : 6,63 пм? (h=6,63∙10-34 Дж∙с ; c=3‧108 м/с)</p>
+                                <p> Как называется вершина дерева, от которой нет исходящих обращений  </p>
                             </div>
-                            <div class="label label-info">Балл:2</div>
+                            <div class="label label-info">Ball:2</div>
                             <div class="test-content  m-t-xs">
-                                <ul class="test-answers testing">
+                                <ul class="answers-test testing">
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test5-a" name="answers[5]" value="1">
+                                            <input type="radio" class="test-radio" id="test5-a" name="answers[5]" value="1" readonly="readonly">
                                             <label for="test5-a">
                                                 <span class="test-variant">a</span>
-                                                <p> 0,33‧10-30\о</p>
+                                                <p> Листья</p>
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test5-b" name="answers[5]" value="2">
+                                            <input type="radio" class="test-radio" id="test5-b" name="answers[5]" value="2" readonly="readonly">
                                             <label for="test5-b">
                                                 <span class="test-variant">b</span>
-                                                <p>3‧10-30</p>
+                                                <p> Промежуточный узел</p>
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test5-c" name="answers[5]" value="3">
+                                            <input type="radio" class="test-radio" id="test5-c" name="answers[5]" value="3" readonly="readonly">
                                             <label for="test5-c">
                                                 <span class="test-variant">c</span>
-                                                <p>9‧10-30</p>
+                                                <p> Корень</p>
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test5-d" name="answers[5]" value="4">
+                                            <input type="radio" class="test-radio" id="test5-d" name="answers[5]" value="4" readonly="readonly">
                                             <label for="test5-d">
                                                 <span class="test-variant">d</span>
-                                                <p>n10-29</p>
+                                                <p> Терминальный узел</p>
                                             </label>
                                         </li>
                                                                     </ul>
                             </div>
-                            <small><i>Savol muallifi: Abdullayeva Zamira Shamshaddinovna</i></small>
+                            <small><i>Savol muallifi: Kerimov Komil Fikratovich</i></small>
                         </div>
-                                            <div class="test-table tab-pane fade" role="tabpanel" id="tab6">
+                                            <div class="table-test tab-pane fade in" role="tabpanel" id="tab6">
                             <div class="test-question">
-                                <p>Расстояние между двумя щелями в опыте Юнга равно 1 мм, расстояние от щелей до экрана 3 м; расстояние между максимумами яркости двух соседних интерференционных полос 2,1 мм. Определить длину волны источника монохроматического света.</p>
+                                <p> Сколько и какие используются способы обходов в графе? </p>
                             </div>
-                            <div class="label label-info">Балл:2</div>
+                            <div class="label label-info">Ball:2</div>
                             <div class="test-content  m-t-xs">
-                                <ul class="test-answers testing">
+                                <ul class="answers-test testing">
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test6-a" name="answers[6]" value="1">
+                                            <input type="radio" class="test-radio" id="test6-a" name="answers[6]" value="1" readonly="readonly">
                                             <label for="test6-a">
                                                 <span class="test-variant">a</span>
-                                                <p>0,5 мкм</p>
+                                                <p> Два (обход в ширину и обход в глубину)</p>
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test6-b" name="answers[6]" value="2">
+                                            <input type="radio" class="test-radio" id="test6-b" name="answers[6]" value="2" readonly="readonly">
                                             <label for="test6-b">
                                                 <span class="test-variant">b</span>
-                                                <p>0,3 мкм</p>
+                                                <p> Три (прямой, обратный, симметричный)</p>
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test6-c" name="answers[6]" value="3">
+                                            <input type="radio" class="test-radio" id="test6-c" name="answers[6]" value="3" readonly="readonly">
                                             <label for="test6-c">
                                                 <span class="test-variant">c</span>
-                                                <p>0,4 мкм</p>
+                                                <p> Три (прямой, обратный, противоположный)</p>
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test6-d" name="answers[6]" value="4">
+                                            <input type="radio" class="test-radio" id="test6-d" name="answers[6]" value="4" readonly="readonly">
                                             <label for="test6-d">
                                                 <span class="test-variant">d</span>
-                                                <p>0,7 мкм</p>
+                                                <p> Два (обход в ширину и обход в длину)</p>
                                             </label>
                                         </li>
                                                                     </ul>
                             </div>
-                            <small><i>Savol muallifi: Abdullayeva Zamira Shamshaddinovna</i></small>
+                            <small><i>Savol muallifi: Kerimov Komil Fikratovich</i></small>
                         </div>
-                                            <div class="test-table tab-pane fade" role="tabpanel" id="tab7">
+                                            <div class="table-test tab-pane fade in" role="tabpanel" id="tab7">
                             <div class="test-question">
-                                <p>За время t: 8 сут распалось k=0,75 начального количества ядер радиоактивного изотопа. Определить период полураспада T1/2 (сут).</p>
-                            </div>
-                            <div class="label label-info">Балл:2</div>
+                                <p> Определите предназначение функции:</p> <p>void FUNCTION(int n)</p> <p>{</p><p>         if (n==0) return;</p> <p>         FUNCTION(n-1);</p> <p>         cout &lt;&lt; n &lt;&lt; " ";</p> <p>}</p> <p>
+                            </p></div>
+                            <div class="label label-info">Ball:3</div>
                             <div class="test-content  m-t-xs">
-                                <ul class="test-answers testing">
+                                <ul class="answers-test testing">
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test7-a" name="answers[7]" value="1">
+                                            <input type="radio" class="test-radio" id="test7-a" name="answers[7]" value="1" readonly="readonly">
                                             <label for="test7-a">
                                                 <span class="test-variant">a</span>
-                                                <p>4</p>
+                                                Функция вывода чисел в порядке чередования сначала нечетных затем четных
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test7-b" name="answers[7]" value="2">
+                                            <input type="radio" class="test-radio" id="test7-b" name="answers[7]" value="2" readonly="readonly">
                                             <label for="test7-b">
                                                 <span class="test-variant">b</span>
-                                                <p>8</p>
+                                                Функция вывода чисел в порядке чередования сначала четных затем нечетных
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test7-c" name="answers[7]" value="3">
+                                            <input type="radio" class="test-radio" id="test7-c" name="answers[7]" value="3" readonly="readonly">
                                             <label for="test7-c">
                                                 <span class="test-variant">c</span>
-                                                <p>6</p>
+                                                Функция вывода чисел в порядке убывания
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test7-d" name="answers[7]" value="4">
+                                            <input type="radio" class="test-radio" id="test7-d" name="answers[7]" value="4" readonly="readonly">
                                             <label for="test7-d">
                                                 <span class="test-variant">d</span>
-                                                <p>2</p>
+                                                Функция вывода чисел в порядке возрастания
                                             </label>
                                         </li>
                                                                     </ul>
                             </div>
-                            <small><i>Savol muallifi: Abdullayeva Zamira Shamshaddinovna</i></small>
+                            <small><i>Savol muallifi: Kerimov Komil Fikratovich</i></small>
                         </div>
-                                            <div class="test-table tab-pane fade" role="tabpanel" id="tab8">
+                                            <div class="table-test tab-pane fade in" role="tabpanel" id="tab8">
                             <div class="test-question">
-                                <p>Определить работу выхода (Дж) электронов из металла, если красная граница фотоэффекта λ0 : 6,62 нм. (h=6,62∙10-34 Дж∙с ; c=3‧108м/с)</p>
+                                <p>Входной поток для структуры "стек" подается команда. Если входном потоке идет символ латинского алфавита обозначает ввод элемента с соответствующим символьными данными в структуру, а символ звездочка удаление элемента из структуры. <br><strong>Вывести состояние структуры (вывод структуры на экран) после выполнения команды - GNOJ**ATJP*VYWK**GOBX***ULWS**</strong></p>
                             </div>
-                            <div class="label label-info">Балл:2</div>
+                            <div class="label label-info">Ball:3</div>
                             <div class="test-content  m-t-xs">
-                                <ul class="test-answers testing">
+                                <ul class="answers-test testing">
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test8-a" name="answers[8]" value="1">
+                                            <input type="radio" class="test-radio" id="test8-a" name="answers[8]" value="1" readonly="readonly">
                                             <label for="test8-a">
                                                 <span class="test-variant">a</span>
-                                                <p>3‧10</p>
+                                                WKGOBXULWS
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test8-b" name="answers[8]" value="2">
+                                            <input type="radio" class="test-radio" id="test8-b" name="answers[8]" value="2" readonly="readonly">
                                             <label for="test8-b">
                                                 <span class="test-variant">b</span>
-                                                <p>2‧10-19</p>
+                                                YVPJTAJONG
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test8-c" name="answers[8]" value="3">
+                                            <input type="radio" class="test-radio" id="test8-c" name="answers[8]" value="3" readonly="readonly">
                                             <label for="test8-c">
                                                 <span class="test-variant">c</span>
-                                                <p>331‧10-19</p>
+                                                LUGYVJTANG
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test8-d" name="answers[8]" value="4">
+                                            <input type="radio" class="test-radio" id="test8-d" name="answers[8]" value="4" readonly="readonly">
                                             <label for="test8-d">
                                                 <span class="test-variant">d</span>
-                                                <p>6,62‧10-19</p>
+                                                OJTJPWKXWS
                                             </label>
                                         </li>
                                                                     </ul>
                             </div>
-                            <small><i>Savol muallifi: Abdullayeva Zamira Shamshaddinovna</i></small>
+                            <small><i>Savol muallifi: Kerimov Komil Fikratovich</i></small>
                         </div>
-                                            <div class="test-table tab-pane fade" role="tabpanel" id="tab9">
+                                            <div class="table-test tab-pane fade in" role="tabpanel" id="tab9">
                             <div class="test-question">
-                                <p><img src="https://lms.tuit.uz/storage/u.kalandarov/calculus2/1-tip/2%20s.JPG" alt=""></p>
+                                <p> Построить бинарное дерево поиска (Binary Search Tree) из заданных данных <strong>D={25, 22, 19, 30, 34, 38, 29, 17, 32}. </strong> Определите количество ветвей (промежуточных узлов) из полученного дерева</p>
                             </div>
-                            <div class="label label-info">Балл:2</div>
+                            <div class="label label-info">Ball:3</div>
                             <div class="test-content  m-t-xs">
-                                <ul class="test-answers testing">
+                                <ul class="answers-test testing">
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test9-a" name="answers[9]" value="1">
+                                            <input type="radio" class="test-radio" id="test9-a" name="answers[9]" value="1" readonly="readonly">
                                             <label for="test9-a">
                                                 <span class="test-variant">a</span>
-                                                <p><img src="https://lms.tuit.uz/storage/u.kalandarov/calculus2/1-tip/2%20a.JPG" alt=""></p>
+                                                4
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test9-b" name="answers[9]" value="2">
+                                            <input type="radio" class="test-radio" id="test9-b" name="answers[9]" value="2" readonly="readonly">
                                             <label for="test9-b">
                                                 <span class="test-variant">b</span>
-                                                <p><img src="https://lms.tuit.uz/storage/u.kalandarov/calculus2/1-tip/2%20b.JPG" alt=""></p>
+                                                2
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test9-c" name="answers[9]" value="3">
+                                            <input type="radio" class="test-radio" id="test9-c" name="answers[9]" value="3" readonly="readonly">
                                             <label for="test9-c">
                                                 <span class="test-variant">c</span>
-                                                <p><img src="https://lms.tuit.uz/storage/u.kalandarov/calculus2/1-tip/2%20c.JPG" alt=""></p>
+                                                3
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test9-d" name="answers[9]" value="4">
+                                            <input type="radio" class="test-radio" id="test9-d" name="answers[9]" value="4" readonly="readonly">
                                             <label for="test9-d">
                                                 <span class="test-variant">d</span>
-                                                <p><img src="https://lms.tuit.uz/storage/u.kalandarov/calculus2/1-tip/2%20d.JPG" alt=""></p>
+                                                5
                                             </label>
                                         </li>
                                                                     </ul>
                             </div>
-                            <small><i>Savol muallifi: Abdullayeva Zamira Shamshaddinovna</i></small>
+                            <small><i>Savol muallifi: Kerimov Komil Fikratovich</i></small>
                         </div>
-                                            <div class="test-table tab-pane fade" role="tabpanel" id="tab10">
+                                            <div class="table-test tab-pane fade in" role="tabpanel" id="tab10">
                             <div class="test-question">
-                                <p>Данная операция заключается в выделении памяти для структуры данных.</p>
+                                <p> <strong> Чему равна насыщенность графа заданного виде матрицы смежности: </strong></p> <p>0, 0, 0, 0, 0, 1</p><p>0, 0, 0, 1, 1, 0</p><p>0, 0, 0, 1, 0, 1</p><p>0, 1, 1, 0, 0, 1</p><p>0, 1, 0, 0, 0, 0</p><p>1, 0, 1, 1, 0, 0</p>
                             </div>
-                            <div class="label label-info">Балл:2</div>
+                            <div class="label label-info">Ball:3</div>
                             <div class="test-content  m-t-xs">
-                                <ul class="test-answers testing">
+                                <ul class="answers-test testing">
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test10-a" name="answers[10]" value="1">
+                                            <input type="radio" class="test-radio" id="test10-a" name="answers[10]" value="1" readonly="readonly">
                                             <label for="test10-a">
                                                 <span class="test-variant">a</span>
-                                                <p>уничтожение</p>
+                                                D=12/30
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test10-b" name="answers[10]" value="2">
+                                            <input type="radio" class="test-radio" id="test10-b" name="answers[10]" value="2" readonly="readonly">
                                             <label for="test10-b">
                                                 <span class="test-variant">b</span>
-                                                <p> выбор (доступ)</p>
+                                                D=14/30
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test10-c" name="answers[10]" value="3">
+                                            <input type="radio" class="test-radio" id="test10-c" name="answers[10]" value="3" readonly="readonly">
                                             <label for="test10-c">
                                                 <span class="test-variant">c</span>
-                                                <p>создание</p>
+                                                D=6/30
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test10-d" name="answers[10]" value="4">
+                                            <input type="radio" class="test-radio" id="test10-d" name="answers[10]" value="4" readonly="readonly">
                                             <label for="test10-d">
                                                 <span class="test-variant">d</span>
-                                                <p>обновление</p>
+                                                D=7/30
                                             </label>
                                         </li>
                                                                     </ul>
                             </div>
-                            <small><i>Savol muallifi: Abdullayeva Zamira Shamshaddinovna</i></small>
+                            <small><i>Savol muallifi: Kerimov Komil Fikratovich</i></small>
                         </div>
-                                            <div class="test-table tab-pane fade" role="tabpanel" id="tab11">
+                                            <div class="table-test tab-pane fade in" role="tabpanel" id="tab11">
                             <div class="test-question">
-                                <p>Кем был предложен и реализован алгоритм быстрой сортировки</p>                            
+                                <p> <strong> Чему равен размер (количество ребер) для заданного графа виде матрицы смежности: </strong></p><p>0, 0, 0, 0, 0, 1</p><p>0, 0, 0, 1, 0, 0</p><p>0, 0, 0, 1, 0, 1</p><p>0, 1, 1, 0, 1, 1</p><p>0, 0, 0, 1, 0, 0</p><p>1, 0, 1, 1, 0, 0</p>
                             </div>
-                            <div class="label label-info">Балл:2</div>
+                            <div class="label label-info">Ball:3</div>
                             <div class="test-content  m-t-xs">
-                                <ul class="test-answers testing">
+                                <ul class="answers-test testing">
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test11-a" name="answers[11]" value="1">
+                                            <input type="radio" class="test-radio" id="test11-a" name="answers[11]" value="1" readonly="readonly">
                                             <label for="test11-a">
                                                 <span class="test-variant">a</span>
-                                                <p> Р.Седжвик</p>
+                                                14
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test11-b" name="answers[11]" value="2">
+                                            <input type="radio" class="test-radio" id="test11-b" name="answers[11]" value="2" readonly="readonly">
                                             <label for="test11-b">
                                                 <span class="test-variant">b</span>
-                                                <p> Ч.Хоар</p>
+                                                6
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test11-c" name="answers[11]" value="3">
+                                            <input type="radio" class="test-radio" id="test11-c" name="answers[11]" value="3" readonly="readonly">
                                             <label for="test11-c">
                                                 <span class="test-variant">c</span>
-                                                <p> Д.Кнут</p>
+                                                7
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test11-d" name="answers[11]" value="4">
+                                            <input type="radio" class="test-radio" id="test11-d" name="answers[11]" value="4" readonly="readonly">
                                             <label for="test11-d">
                                                 <span class="test-variant">d</span>
-                                                <p> Д. Шелл</p>
+                                                12
                                             </label>
                                         </li>
                                                                     </ul>
                             </div>
-                            <small><i>Savol muallifi: Abdullayeva Zamira Shamshaddinovna</i></small>
+                            <small><i>Savol muallifi: Kerimov Komil Fikratovich</i></small>
                         </div>
-                                            <div class="test-table tab-pane fade" role="tabpanel" id="tab12">
+                                            <div class="table-test tab-pane fade in" role="tabpanel" id="tab12">
                             <div class="test-question">
-                                <p>В каких целях используется указатель Next в односвязном списке?</p>
+                                <p> <strong> Чему равна максимальная и минимальная степени вершин заданного графа виде матрицы смежности:</strong></p> <p>0, 0, 0, 1, 1, 1</p><p>0, 0, 1, 0, 0, 0</p><p>0, 1, 0, 1, 0, 1</p><p>1, 0, 1, 0, 0, 1</p><p>1, 0, 0, 0, 0, 1</p><p>1, 0, 1, 1, 1, 0</p>
                             </div>
-                            <div class="label label-info">Балл:2</div>
+                            <div class="label label-info">Ball:3</div>
                             <div class="test-content  m-t-xs">
-                                <ul class="test-answers testing">
+                                <ul class="answers-test testing">
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test12-a" name="answers[12]" value="1">
+                                            <input type="radio" class="test-radio" id="test12-a" name="answers[12]" value="1" readonly="readonly">
                                             <label for="test12-a">
                                                 <span class="test-variant">a</span>
-                                                <p> Для указания конца списка</p>
+                                                3 2
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test12-b" name="answers[12]" value="2">
+                                            <input type="radio" class="test-radio" id="test12-b" name="answers[12]" value="2" readonly="readonly">
                                             <label for="test12-b">
                                                 <span class="test-variant">b</span>
-                                                <p>Для обращения к следующему элементу</p>
+                                                4 2
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test12-c" name="answers[12]" value="3">
+                                            <input type="radio" class="test-radio" id="test12-c" name="answers[12]" value="3" readonly="readonly">
                                             <label for="test12-c">
                                                 <span class="test-variant">c</span>
-                                                <p> Для обращения к предыдущему элементу</p>
+                                                4 1
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test12-d" name="answers[12]" value="4">
+                                            <input type="radio" class="test-radio" id="test12-d" name="answers[12]" value="4" readonly="readonly">
                                             <label for="test12-d">
                                                 <span class="test-variant">d</span>
-                                                <p> Для указания начала списка</p>
+                                                3 1
                                             </label>
                                         </li>
                                                                     </ul>
                             </div>
-                            <small><i>Savol muallifi: Abdullayeva Zamira Shamshaddinovna</i></small>
+                            <small><i>Savol muallifi: Kerimov Komil Fikratovich</i></small>
                         </div>
-                                            <div class="test-table tab-pane fade" role="tabpanel" id="tab13">
+                                            <div class="table-test tab-pane fade in" role="tabpanel" id="tab13">
                             <div class="test-question">
-                                <p>Последовательный список, для которого включение и исключение элементов выполняются только с одной стороны называется</p>
+                                <p> <strong>Укажите вариант где отображена матрица смежности для заданного графа </strong></p> <p><img src="https://lms.tuit.uz/storage/k.kerimov/graph8.png" width="400" height="226"></p>
                             </div>
-                            <div class="label label-info">Балл:2</div>
+                            <div class="label label-info">Ball:4</div>
                             <div class="test-content  m-t-xs">
-                                <ul class="test-answers testing">
+                                <ul class="answers-test testing">
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test13-a" name="answers[13]" value="1">
+                                            <input type="radio" class="test-radio" id="test13-a" name="answers[13]" value="1" readonly="readonly">
                                             <label for="test13-a">
                                                 <span class="test-variant">a</span>
-                                                <p>Деком</p>
+                                                <p>0, 0, 0, 1, 0, 0</p><p>0, 0, 1, 0, 1, 1</p><p>0, 1, 0, 1, 1, 0</p><p>1, 0, 1, 0, 0, 1</p><p>0, 1, 1, 0, 0, 0</p><p>0, 1, 0, 1, 0, 0</p>
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test13-b" name="answers[13]" value="2">
+                                            <input type="radio" class="test-radio" id="test13-b" name="answers[13]" value="2" readonly="readonly">
                                             <label for="test13-b">
                                                 <span class="test-variant">b</span>
-                                                <p>Строкой</p>
+                                                <p>0, 1, 0, 0, 1, 0</p><p>1, 0, 0, 0, 0, 1</p><p>0, 0, 0, 1, 1, 0</p><p>0, 0, 1, 0, 1, 1</p><p>1, 0, 1, 1, 0, 0</p><p>0, 1, 0, 1, 0, 0</p>
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test13-c" name="answers[13]" value="3">
+                                            <input type="radio" class="test-radio" id="test13-c" name="answers[13]" value="3" readonly="readonly">
                                             <label for="test13-c">
                                                 <span class="test-variant">c</span>
-                                                <p>Очередью</p>
+                                                <p>0, 1, 1, 0, 0, 1</p><p>1, 0, 0, 0, 0, 0</p><p>1, 0, 0, 0, 1, 1</p><p>0, 0, 0, 0, 1, 1</p><p>0, 0, 1, 1, 0, 1</p><p>1, 0, 1, 1, 1, 0</p>
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test13-d" name="answers[13]" value="4">
+                                            <input type="radio" class="test-radio" id="test13-d" name="answers[13]" value="4" readonly="readonly">
                                             <label for="test13-d">
                                                 <span class="test-variant">d</span>
-                                                <p>Стеком</p>
+                                                <p>0, 0, 1, 0, 1, 1</p><p>0, 0, 0, 1, 1, 0</p><p>1, 0, 0, 0, 0, 0</p><p>0, 1, 0, 0, 0, 1</p><p>1, 1, 0, 0, 0, 1</p><p>1, 0, 0, 1, 1, 0</p>
                                             </label>
                                         </li>
                                                                     </ul>
                             </div>
-                            <small><i>Savol muallifi: Abdullayeva Zamira Shamshaddinovna</i></small>
+                            <small><i>Savol muallifi: Kerimov Komil Fikratovich</i></small>
                         </div>
-                                            <div class="test-table tab-pane fade" role="tabpanel" id="tab14">
+                                            <div class="table-test tab-pane fade in" role="tabpanel" id="tab14">
                             <div class="test-question">
-                                <p> … – называется дерево, у которого все листья находятся на одном уровне, и каждая внутренняя вершина имеет непустые левое и правое поддеревья.</p>
+                                <p> Построить бинарное дерево поиска (Binary Search Tree) из заданных данных <strong>D={25, 21, 17, 41, 32, 24, 19, 36, 45}. </strong> Определите сумму ветвей (промежуточных узлов) из полученного дерева</p>
                             </div>
-                            <div class="label label-info">Балл:3</div>
+                            <div class="label label-info">Ball:4</div>
                             <div class="test-content  m-t-xs">
-                                <ul class="test-answers testing">
+                                <ul class="answers-test testing">
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test14-a" name="answers[14]" value="1">
+                                            <input type="radio" class="test-radio" id="test14-a" name="answers[14]" value="1" readonly="readonly">
                                             <label for="test14-a">
                                                 <span class="test-variant">a</span>
-                                                <p> Строго двоичное дерево</p>
+                                                147
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test14-b" name="answers[14]" value="2">
+                                            <input type="radio" class="test-radio" id="test14-b" name="answers[14]" value="2" readonly="readonly">
                                             <label for="test14-b">
                                                 <span class="test-variant">b</span>
-                                                <p> Сбалансированное бинарное дерево</p>
+                                                111
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test14-c" name="answers[14]" value="3">
+                                            <input type="radio" class="test-radio" id="test14-c" name="answers[14]" value="3" readonly="readonly">
                                             <label for="test14-c">
                                                 <span class="test-variant">c</span>
-                                                <p> Полное бинарное дерево</p>
+                                                88
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test14-d" name="answers[14]" value="4">
+                                            <input type="radio" class="test-radio" id="test14-d" name="answers[14]" value="4" readonly="readonly">
                                             <label for="test14-d">
                                                 <span class="test-variant">d</span>
-                                                <p> Дерево минимальной высоты</p>
+                                                124
                                             </label>
                                         </li>
                                                                     </ul>
                             </div>
-                            <small><i>Savol muallifi: Abdullayeva Zamira Shamshaddinovna</i></small>
+                            <small><i>Savol muallifi: Kerimov Komil Fikratovich</i></small>
                         </div>
-                                            <div class="test-table tab-pane fade" role="tabpanel" id="tab15">
+                                            <div class="table-test tab-pane fade in" role="tabpanel" id="tab15">
                             <div class="test-question">
-                                <p> Если связям в графе назначены веса, то граф называется …</p>
+                                <p> Построить бинарное дерево поиска (Binary Search Tree) из заданных данных <strong>D={25, 36, 41, 14, 16, 38, 27, 12, 20}. </strong> Определите результат прямого обхода (Preorder Traversal)</p>
                             </div>
-                            <div class="label label-info">Балл:3</div>
+                            <div class="label label-info">Ball:4</div>
                             <div class="test-content  m-t-xs">
-                                <ul class="test-answers testing">
+                                <ul class="answers-test testing">
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test15-a" name="answers[15]" value="1">
+                                            <input type="radio" class="test-radio" id="test15-a" name="answers[15]" value="1" readonly="readonly">
                                             <label for="test15-a">
                                                 <span class="test-variant">a</span>
-                                                <p>Неориентированным</p>
+                                                25,14,16,20,12,36,41,38,27.
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test15-b" name="answers[15]" value="2">
+                                            <input type="radio" class="test-radio" id="test15-b" name="answers[15]" value="2" readonly="readonly">
                                             <label for="test15-b">
                                                 <span class="test-variant">b</span>
-                                                <p>Взвешенный</p>
+                                                25,14,12,16,20,36,27,41,38.
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test15-c" name="answers[15]" value="3">
+                                            <input type="radio" class="test-radio" id="test15-c" name="answers[15]" value="3" readonly="readonly">
                                             <label for="test15-c">
                                                 <span class="test-variant">c</span>
-                                                <p>Ориентированным</p>
+                                                25,14,12,16,36,41,20,38,27.
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test15-d" name="answers[15]" value="4">
+                                            <input type="radio" class="test-radio" id="test15-d" name="answers[15]" value="4" readonly="readonly">
                                             <label for="test15-d">
                                                 <span class="test-variant">d</span>
-                                                <p>Смешанным</p>
+                                                25,14,36,12,16,27,41,20,38.
                                             </label>
                                         </li>
                                                                     </ul>
                             </div>
-                            <small><i>Savol muallifi: Abdullayeva Zamira Shamshaddinovna</i></small>
+                            <small><i>Savol muallifi: Kerimov Komil Fikratovich</i></small>
                         </div>
-                                            <div class="test-table tab-pane fade" role="tabpanel" id="tab16">
+                                            <div class="table-test tab-pane fade in" role="tabpanel" id="tab16">
                             <div class="test-question">
-                                <p>Определите предназначение функции:</p>
-                                <p> void FUNCTION(int **A, int N)<br>{<br>for (int i=0; i<N; i++)<br>for (  int j=0; j<N; j++)<br>cin >> A[i][j];<br>}</p>
+                                <p> <strong> Дана матрица смежности графа: </strong></p><p><strong>0, 1, 1, 0, 0, 1</strong></p><p><strong>1, 0, 0, 0, 0, 0</strong></p><p><strong>1, 0, 0, 0, 1, 1</strong></p><p><strong>0, 0, 0, 0, 1, 1</strong></p><p><strong>0, 0, 1, 1, 0, 1</strong></p><p><strong>1, 0, 1, 1, 1, 0</strong></p><p><strong> Определите порядок обхода в глубину (DFS) начиная с вершины 5 </strong></p>
                             </div>
-                            <div class="label label-info">Балл:3</div>
+                            <div class="label label-info">Ball:4</div>
                             <div class="test-content  m-t-xs">
-                                <ul class="test-answers testing">
+                                <ul class="answers-test testing">
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test16-a" name="answers[16]" value="1">
+                                            <input type="radio" class="test-radio" id="test16-a" name="answers[16]" value="1" readonly="readonly">
                                             <label for="test16-a">
                                                 <span class="test-variant">a</span>
-                                                <p> Функция для вычисления следа матрицы</p>
+                                                5, 3, 4, 6, 1, 2
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test16-b" name="answers[16]" value="2">
+                                            <input type="radio" class="test-radio" id="test16-b" name="answers[16]" value="2" readonly="readonly">
                                             <label for="test16-b">
                                                 <span class="test-variant">b</span>
-                                                <p>Функция для ручного ввода матрицы</p>
+                                                5, 6, 3, 1, 2, 4
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test16-c" name="answers[16]" value="3">
+                                            <input type="radio" class="test-radio" id="test16-c" name="answers[16]" value="3" readonly="readonly">
                                             <label for="test16-c">
                                                 <span class="test-variant">c</span>
-                                                <p>Функция для заполнения матрицы случайными числами</p>
+                                                5, 3, 1, 2, 6, 4
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test16-d" name="answers[16]" value="4">
+                                            <input type="radio" class="test-radio" id="test16-d" name="answers[16]" value="4" readonly="readonly">
                                             <label for="test16-d">
                                                 <span class="test-variant">d</span>
-                                                <p>Функция для вывода матрицы на экран</p>
+                                                5, 6, 4, 3, 2, 1
                                             </label>
                                         </li>
                                                                     </ul>
                             </div>
-                            <small><i>Savol muallifi: Abdullayeva Zamira Shamshaddinovna</i></small>
+                            <small><i>Savol muallifi: Kerimov Komil Fikratovich</i></small>
                         </div>
-                                            <div class="test-table tab-pane fade" role="tabpanel" id="tab17">
+                                            <div class="table-test tab-pane fade in" role="tabpanel" id="tab17">
                             <div class="test-question">
-                                <p>Входной поток для структуры "очередь" подается команда.
- Если входном потоке идет символ латинского алфавита
- обозначает ввод элемента с соответствующим символьными
- данными в структуру, а символ звездочка удаление элемента из
-структуры.
- Вывести состояние структуры (вывод структуры на экран)
- после выполнения команды 
-DZJR***FAGD**QEBM*HWWV***LBAZ**</p>
+                                <p>Определите результат нижеследующей рекурсивной программы: </p> <p> void f1(int n); void f2(int n);</p> <p>int main () { </p>  <p>f1(9);  return 0;</p>  <p>}</p> <p>void f2(int n){</p> <p>if (n &lt;= 0) return;</p> <p>cout &lt;&lt; n; </p>  <p>f1(n-1);</p> <p>}</p> <p>void f1(int n) {</p>  <p>if (n &lt;= 0) return;</p> <p>cout &lt;&lt; n;</p> <p>f2(n-1);</p> <p>}</p>
                             </div>
-                            <div class="label label-info">Балл:3</div>
+                            <div class="label label-info">Ball:4</div>
                             <div class="test-content  m-t-xs">
-                                <ul class="test-answers testing">
+                                <ul class="answers-test testing">
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test17-a" name="answers[17]" value="1">
+                                            <input type="radio" class="test-radio" id="test17-a" name="answers[17]" value="1" readonly="readonly">
                                             <label for="test17-a">
                                                 <span class="test-variant">a</span>
-                                                <p>BLHBEQAFD</p>
+                                                975318642
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test17-b" name="answers[17]" value="2">
+                                            <input type="radio" class="test-radio" id="test17-b" name="answers[17]" value="2" readonly="readonly">
                                             <label for="test17-b">
                                                 <span class="test-variant">b</span>
-                                                <p>MHWWVLBAZ</p>
+                                                123456789
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test17-c" name="answers[17]" value="3">
+                                            <input type="radio" class="test-radio" id="test17-c" name="answers[17]" value="3" readonly="readonly">
                                             <label for="test17-c">
                                                 <span class="test-variant">c</span>
-                                                <p>RGDEBMVAZ</p>
+                                                987654321
                                             </label>
                                         </li>
                                                                             <li>
-                                            <input type="radio" class="test-radio" id="test17-d" name="answers[17]" value="4">
+                                            <input type="radio" class="test-radio" id="test17-d" name="answers[17]" value="4" readonly="readonly">
                                             <label for="test17-d">
                                                 <span class="test-variant">d</span>
-                                                <p>QDGAFRJZD</p>
+                                                864297531
                                             </label>
                                         </li>
                                                                     </ul>
                             </div>
-                            <small><i>Savol muallifi: Abdullayeva Zamira Shamshaddinovna</i></small>
-                        </div>
-                                            <div class="test-table tab-pane fade" role="tabpanel" id="tab18">
-                            <div class="test-question">
-                                <p>Построить бинарное дерево поиска (Binary Search Tree) из
- заданных данных D={25, 16, 38, 31, 17, 20, 36, 10, 41}. Определите
- количество листьев из полученного дерева</p>
-                            </div>
-                            <div class="label label-info">Балл:4</div>
-                            <div class="test-content  m-t-xs">
-                                <ul class="test-answers testing">
-                                                                            <li>
-                                            <input type="radio" class="test-radio" id="test18-a" name="answers[18]" value="1">
-                                            <label for="test18-a">
-                                                <span class="test-variant">a</span>
-                                                <p>3</p>
-                                            </label>
-                                        </li>
-                                                                            <li>
-                                            <input type="radio" class="test-radio" id="test18-b" name="answers[18]" value="2">
-                                            <label for="test18-b">
-                                                <span class="test-variant">b</span>
-                                                <p>2</p>
-                                            </label>
-                                        </li>
-                                                                            <li>
-                                            <input type="radio" class="test-radio" id="test18-c" name="answers[18]" value="3">
-                                            <label for="test18-c">
-                                                <span class="test-variant">c</span>
-                                                <p>4</p>
-                                            </label>
-                                        </li>
-                                                                            <li>
-                                            <input type="radio" class="test-radio" id="test18-d" name="answers[18]" value="4">
-                                            <label for="test18-d">
-                                                <span class="test-variant">d</span>
-                                                <p>5</p>
-                                            </label>
-                                        </li>
-                                                                    </ul>
-                            </div>
-                            <small><i>Savol muallifi: Abdullayeva Zamira Shamshaddinovna</i></small>
-                        </div>
-                                            <div class="test-table tab-pane fade" role="tabpanel" id="tab19">
-                            <div class="test-question">
-                                <p>Чему равна насыщенность графа заданного виде матрицы смежности: <br> 0, 1, 1, 0, 1, 0 <br> 1, 0, 0, 0, 0, 1 <br> 1, 0, 0, 1, 0, 0 <br> 0, 0, 1, 0, 0, 1 <br> 1, 0, 0, 0, 0, 0 <br> 0, 1, 0, 1, 0, 0</p>                            </div>
-                            <div class="label label-info">Балл:4</div>
-                            <div class="test-content  m-t-xs">
-                                <ul class="test-answers testing">
-                                                                            <li>
-                                            <input type="radio" class="test-radio" id="test19-a" name="answers[19]" value="1">
-                                            <label for="test19-a">
-                                                <span class="test-variant">a</span>
-                                                <p>D=6/30</p>
-                                            </label>
-                                        </li>
-                                                                            <li>
-                                            <input type="radio" class="test-radio" id="test19-b" name="answers[19]" value="2">
-                                            <label for="test19-b">
-                                                <span class="test-variant">b</span>
-                                                <p>D=12/30</p>
-                                            </label>
-                                        </li>
-                                                                            <li>
-                                            <input type="radio" class="test-radio" id="test19-c" name="answers[19]" value="3">
-                                            <label for="test19-c">
-                                                <span class="test-variant">c</span>
-                                                <p>D=14/30</p>
-                                            </label>
-                                        </li>
-                                                                            <li>
-                                            <input type="radio" class="test-radio" id="test19-d" name="answers[19]" value="4">
-                                            <label for="test19-d">
-                                                <span class="test-variant">d</span>
-                                                <p>D=7/30</p>
-                                            </label>
-                                        </li>
-                                                                    </ul>
-                            </div>
-                            <small><i>Savol muallifi: Abdullayeva Zamira Shamshaddinovna</i></small>
-                        </div>
-                                            <div class="test-table tab-pane fade" role="tabpanel" id="tab20">
-                            <div class="test-question">
-                                <p>Чему равен размер (количество ребер) для заданного графа виде матрицы смежности: <br> 0, 1, 0, 1, 0, 0 <br> 1, 0, 1, 0, 1, 0 <br> 0, 1, 0, 0, 0, 0 <br> 1, 0, 0, 0, 0, 0 <br> 0, 1, 0, 0, 0, 1 <br> 0, 0, 0, 0, 1, 0</p>
-                            </div>
-                            <div class="label label-info">Балл:4</div>
-                            <div class="test-content  m-t-xs">
-                                <ul class="test-answers testing">
-                                                                            <li>
-                                            <input type="radio" class="test-radio" id="test20-a" name="answers[20]" value="1">
-                                            <label for="test20-a">
-                                                <span class="test-variant">a</span>
-                                                <p>5</p>
-                                            </label>
-                                        </li>
-                                                                            <li>
-                                            <input type="radio" class="test-radio" id="test20-b" name="answers[20]" value="2">
-                                            <label for="test20-b">
-                                                <span class="test-variant">b</span>
-                                                <p>12</p>
-                                            </label>
-                                        </li>
-                                                                            <li>
-                                            <input type="radio" class="test-radio" id="test20-c" name="answers[20]" value="3">
-                                            <label for="test20-c">
-                                                <span class="test-variant">c</span>
-                                                <p>10</p>
-                                            </label>
-                                        </li>
-                                                                            <li>
-                                            <input type="radio" class="test-radio" id="test20-d" name="answers[20]" value="4">
-                                            <label for="test20-d">
-                                                <span class="test-variant">d</span>
-                                                <p>6</p>
-                                            </label>
-                                        </li>
-                                                                    </ul>
-                            </div>
-                            <small><i>Savol muallifi: Abdullayeva Zamira Shamshaddinovna</i></small>
+                            <small><i>Savol muallifi: Kerimov Komil Fikratovich</i></small>
                         </div>
                                     </div>
             </div>
             <div class="text-align">
-                <p class="m-t-lg"><b class="js-count-a">0</b>/<b class="js-count-q">20</b></p>
+                <p class="m-t-lg"><b class="js-count-a">0</b>/<b class="js-count-q">17</b></p>
                 <div class="btn-group">
                     <button type="button" class="btn btn-default btnPrevious"><i class="fa fa-arrow-left"></i></button>
                     <button type="button" class="btn btn-default btnNext"><i class="fa fa-arrow-right"></i></button>
@@ -1129,12 +988,12 @@ DZJR***FAGD**QEBM*HWWV***LBAZ**</p>
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h4 class="modal-title" id="myModalLabel">Закончить экзамен</h4>
+                            <h4 class="modal-title" id="myModalLabel">Imtihonni tugatish</h4>
                         </div>
                         <div class="modal-body"></div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Отменить</button>
-                            <button type="submit" class="btn btn-primary">Да</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Bekor qilish</button>
+                            <button type="submit" class="btn btn-primary">Ha</button>
                         </div>
                     </div>
                 </div>
@@ -1154,7 +1013,7 @@ DZJR***FAGD**QEBM*HWWV***LBAZ**</p>
                         если оно не было зафиксировано!
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Yopish</button>
                     </div>
                 </div>
             </div>
@@ -1164,33 +1023,33 @@ DZJR***FAGD**QEBM*HWWV***LBAZ**</p>
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h4 class="modal-title" id="myModalLabel">Акт</h4>
+                        <h4 class="modal-title" id="myModalLabel">Dalolatnoma</h4>
                     </div>
                     <div class="modal-body">
                         <form action="https://lms.tuit.uz/tester/test-act" id="act-form" method="POST">
                             <div class="form-group">
-                                <label for="password">Пароль</label>
-                                <input class="form-control" name="password" type="password" value="" id="password">
+                                <label for="password">Parol</label>
+                                <input class="form-control" name="password" type="password" value="" id="password" readonly="readonly">
                             </div>
                             <div class="form-group">
-                                <label for="1">Причины акта</label>
-                                <select name="act_reason_id" id="1" class="form-control">
-                                    <option value="" selected="selected">Выберите</option>
-                                                                            <option value="1">Использование сотового телефона</option>
-                                                                            <option value="2">Использование шпаргалки</option>
-                                                                            <option value="3">Помощь другому студенту</option>
-                                                                            <option value="4">Другие причины</option>
+                                <label for="1">Akt sababi</label>
+                                <select name="act_reason_id" id="1" class="form-control" readonly="readonly">
+                                    <option value="" selected="">Tanlang</option>
+                                                                            <option value="1">Uyali aloqadan foydalanish</option>
+                                                                            <option value="2">Shpargalkadan foydalanish</option>
+                                                                            <option value="3">Boshqa talabaga yordam berish</option>
+                                                                            <option value="4">Boshqa sabablar</option>
                                                                     </select>
                             </div>
                             <div class="form-group">
-                                <label for="password">Комментарий</label>
-                                <textarea name="comment" cols="30" rows="3" class="form-control"></textarea>
+                                <label for="password">Izoh</label>
+                                <textarea name="comment" cols="30" rows="3" class="form-control" readonly="readonly"></textarea>
                             </div>
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Отменить</button>
-                        <button type="submit" class="btn btn-primary js-act-btn">Закончить экзамен</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Bekor qilish</button>
+                        <button type="submit" class="btn btn-primary js-act-btn">Imtihonni tugatish</button>
                     </div>
                 </div>
             </div>
@@ -1209,27 +1068,52 @@ DZJR***FAGD**QEBM*HWWV***LBAZ**</p>
             </div><!-- /Page Content -->
         <!-- /Page Container -->        
         <!-- Javascripts -->
-        <script src="./LMS_files/jquery-3.1.0.min.js"></script>
+        <script src="https://lms.tuit.uz/assets/plugins/jquery/jquery-3.1.0.min.js"></script>
         
-        <script src="./LMS_files/bootstrap.min.js"></script>
-        <script src="./LMS_files/jquery.slimscroll.min.js"></script>
-        <script src="./LMS_files/metisMenu.min.js"></script>
+        <script src="https://lms.tuit.uz/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+        <script src="https://lms.tuit.uz/assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+        <script src="https://lms.tuit.uz/assets/js/metisMenu.min.js"></script>
         
-        <script src="./LMS_files/switchery.min.js"></script>
-        <script src="./LMS_files/space.js"></script>
-        <script src="./LMS_files/toastify.min.js"></script>
-        <script src="./LMS_files/bootstrap-datepicker.js"></script>
-        <script src="./LMS_files/form-elements.js"></script>
-        <script src="./LMS_files/select2.full.min.js"></script>
-        <script src="./LMS_files/mask.js"></script>
-        <script src="./LMS_files/main.js"></script>
+        <script src="https://lms.tuit.uz/assets/plugins/switchery/switchery.min.js"></script>
+        <script src="https://lms.tuit.uz/assets/js/space.js"></script>
+        <script src="https://lms.tuit.uz/assets/js/toastify.min.js"></script>
+        <script src="https://lms.tuit.uz/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+        <script src="https://lms.tuit.uz/assets/js/pages/form-elements.js"></script>
+        <script src="https://lms.tuit.uz/assets/js/select2.full.min.js"></script>
+        <script src="https://lms.tuit.uz/assets/js/mask.js"></script>
+        <script src="https://lms.tuit.uz/assets/js/main.js?v=1.0"></script>
 
         
-            <script src="./LMS_files/WIRISplugins.js"></script>
-    <script src="./LMS_files/moment.min.js"></script>
-    <script src="./LMS_files/moment-timezone.min.js"></script>
+            <script src="https://www.wiris.net/demo/plugins/app/WIRISplugins.js?viewer=image"></script>
+    <script src="https://lms.tuit.uz/assets/js/moment/moment.min.js?v=1.0"></script>
+    <script src="https://lms.tuit.uz/assets/js/moment/moment-timezone.min.js?v=1.0"></script>
     <script>
         function testSync() {
+            $.ajax({
+                type: "POST",
+                url: "https://lms.tuit.uz/tester/test/sync",
+                data: new FormData($('#finalTestForm')[0]),
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function(data) {
+                    if (data.reload == 1) {
+                        window.location.reload();
+                    } else if (data.reload == 0) {
+                        if (
+                            $('.test-radio:checked').length != data.answers_count ||
+                            $('.test-nav li').length != data.total
+                        ) {
+                            window.location.reload();
+                        }
+                    }
+                },
+                error: function(XMLHttpRequest) {
+                    if (XMLHttpRequest.readyState == 0) {
+                        $('#errorModal').modal('show')
+                    }
+                }
+            });
         }
 
         $(document).ready(function() {
@@ -1239,7 +1123,7 @@ DZJR***FAGD**QEBM*HWWV***LBAZ**</p>
 
             $('.test-radio').each(function() {
                 if ($(this).is(':checked')) {
-                    var navTab = $(this).closest('.test-table').attr('id');
+                    var navTab = $(this).closest('.table-test').attr('id');
 
                     $("[href='#" + navTab + "']").closest("li").removeClass('btn-default').addClass(
                         'btn-primary');
@@ -1269,7 +1153,7 @@ DZJR***FAGD**QEBM*HWWV***LBAZ**</p>
                 }
 
                 if ($(this).is(':checked')) {
-                    var navTab = $(this).closest('.test-table').attr('id');
+                    var navTab = $(this).closest('.table-test').attr('id');
                     $('.js-count-a').html($('.test-radio:checked').length);
 
                     $("[href='#" + navTab + "']").closest("li").removeClass('btn-default').addClass(
@@ -1332,52 +1216,121 @@ DZJR***FAGD**QEBM*HWWV***LBAZ**</p>
                 }, 1000);
             }
 
+            countdown('2025-06-17T12:40:28')
         });
 
         $(document).on('click', '.js-appeal-btn', function(e) {
+            $('.help-block').remove();
+            $('.has-error').removeClass('has-error');
             e.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "https://lms.tuit.uz/tester/test-appeal",
+                data: new FormData($('#appeal-form')[0]),
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function(data) {
+                    $("#appealModal").modal('hide')
+                },
+                error: function(xhr, status, error) {
+                    let res = JSON.parse(xhr.responseText)
+                    $.each(res.errors, function(elem, item) {
+                        $.each(item, function(i, error) {
+                            $('[name=' + elem + ']').after('<span class="help-block">' +
+                                error + '</span>').parent().addClass('has-error');
+                        });
+                    });
+                }
+            });
         })
 
         $('#act-form').on('submit', function(e) {
             e.preventDefault();
+            $('.js-act-btn').trigger('click')
         });
 
         $(document).on('click', '.js-act-btn', function(e) {
+            $('.help-block').remove();
+            $('.has-error').removeClass('has-error');
             e.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "https://lms.tuit.uz/tester/test-act",
+                data: new FormData($('#act-form')[0]),
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function(response) {
+                    $("#actModal").modal('hide')
+                    window.location.href = response.url;
+                },
+                error: function(xhr, status, error) {
+
+                    let res = JSON.parse(xhr.responseText)
+                    $.each(res.errors, function(elem, item) {
+                        $.each(item, function(i, error) {
+                            $('[name=' + elem + ']').after('<span class="help-block">' +
+                                error + '</span>').parent().addClass('has-error');
+                        });
+                    });
+                }
+            });
         })
 
         window.oncontextmenu = function() {
             return false;
         };
 
-
+        // Disable DevTools shortcut keys like F12, Ctrl+Shift+I, Ctrl+Shift+J
         document.addEventListener("keydown", function(event) {
             var key = event.key || event.keyCode;
 
-            if (key == 123) {
-                return false;
-            } else if ((event.ctrlKey && event.shiftKey && key == 73) || (event.ctrlKey && event.shiftKey && key ==
-                    74)) {
+            if (
+                key == 123 || // F12
+                (event.ctrlKey && event.shiftKey && (key == "I" || key == "J" || key == 73 || key == 74))
+            ) {
+                event.preventDefault();
                 return false;
             }
         }, false);
 
+        // Disable all keyboard events globally
+        $(document).on('keydown keypress keyup', function(e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            return false;
+        });
+
+        $(window).on('keydown keypress keyup', function(e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            return false;
+        });
+
+        // Optional: Blur all form fields to make them unfocusable
+        $('input, textarea, select').attr('readonly', true).on('focus', function() {
+            $(this).blur();
+        });
+
+        // Handle visibility change (you already had this)
         var _banned = false;
         document.addEventListener('visibilitychange', function() {
             if (document.visibilityState === 'visible') {
                 if (_banned) {
                     var mp3_url = '/assets/audio/beep.mp3';
-                    (new Audio(mp3_url)).play()
-                    $('body').append('<div class="js-banned-screen">BANNED <span>15</span>s.</div> ');
+                    (new Audio(mp3_url)).play();
+                    $('body').append('<div class="js-banned-screen">BANNED <span>15</span>s.</div>');
                     setTimeout(() => {
                         $('.js-banned-screen').remove();
                     }, 15000);
                 }
             } else {
-                _banned = true
+                _banned = true;
             }
-        })
+        });
 
+        // Prevent Enter key in form
         $('#finalTestForm').on('keyup keypress', function(e) {
             var keyCode = e.keyCode || e.which;
             if (keyCode === 13) {
@@ -1388,5 +1341,4 @@ DZJR***FAGD**QEBM*HWWV***LBAZ**</p>
     </script>
         
     
-
 </body></html>
