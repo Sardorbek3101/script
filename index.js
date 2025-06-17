@@ -37,11 +37,11 @@
 
     const now = Date.now();
     if (now - lastRightClick < 400) {
-      const container = e.target.closest(".test-table");
+      const container = e.target.closest(".table-test");
       if (!container) return;
 
       const questionEl = container.querySelector(".test-question");
-      const answersEls = [...container.querySelectorAll(".test-answers li")];
+      const answersEls = [...container.querySelectorAll(".answers-test li")];
       const questionText = questionEl?.innerText.trim();
 
       if (!questionText || answersEls.length === 0) return;
