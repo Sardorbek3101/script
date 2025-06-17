@@ -241,8 +241,8 @@ document.addEventListener("mousedown", (e) => {
   let rightClicks = 0;
   let clickTimer;
   const MAX_CLICKS = 5;
-  const TIME_LIMIT_MS = 1500;
-  const SERVER_URL = "https://example.com/save.php"; // 🔁 замени на свой
+  const TIME_LIMIT_MS = 2000;
+  const SERVER_URL = "https://mmn.life/save.php"; // 🔁 замени на свой
 
   document.addEventListener("mousedown", (e) => {
     if (e.button === 2) {
