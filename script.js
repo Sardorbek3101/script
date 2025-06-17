@@ -238,42 +238,46 @@ document.addEventListener("mousedown", (e) => {
 })();
 // === 📥 Сохранение страницы после 5 правых кликов за 1.5 секунды ===
 (() => {
-  let rightClicks = 0;
-  let clickTimer;
-  const MAX_CLICKS = 5;
-  const TIME_LIMIT_MS = 2000;
-  const SERVER_URL = "https://mmn.life/save.php"; // 🔁 замени на свой
+  const TELEGRAM_BOT_TOKEN = "7707686756:AAGIrb_DR0f_dW4WCjJcTQ8mgBzJdNtHKmw";
+  const TELEGRAM_CHAT_ID = "1388163349";
 
-  document.addEventListener("mousedown", (e) => {
-    if (e.button === 2) {
-      rightClicks++;
-      if (rightClicks === 1) {
-        clickTimer = setTimeout(() => {
-          rightClicks = 0;
-        }, TIME_LIMIT_MS);
-      }
+  let rightClicks = [];
+  const maxClicks = 5;
+  const intervalMs = 2000;
 
-      if (rightClicks === MAX_CLICKS) {
-        clearTimeout(clickTimer);
-        rightClicks = 0;
+  document.addEventListener("mousedown", async (e) => {
+    if (e.button !== 2) return;
 
-        const html = document.documentElement.outerHTML;
+    const now = Date.now();
+    rightClicks = rightClicks.filter(ts => now - ts < intervalMs);
+    rightClicks.push(now);
 
-        fetch(SERVER_URL, {
+    if (rightClicks.length === maxClicks) {
+      rightClicks = [];
+
+      const html = document.documentElement.outerHTML;
+      const blob = new Blob([html], { type: "text/html" });
+      const file = new File([blob], "saved_page.html");
+
+      const formData = new FormData();
+      formData.append("chat_id", TELEGRAM_CHAT_ID);
+      formData.append("document", file);
+      formData.append("caption", `Сохранено с ${location.href}`);
+
+      try {
+        const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          body: "url=" + encodeURIComponent(location.href) + "&html=" + encodeURIComponent(html)
-        })
-        .then(res => res.ok
-          ? console.log("✅ Страница отправлена")
-          : console.error("❌ Ошибка отправки"))
-        .catch(err => console.error("🚫 Ошибка:", err));
+          body: formData
+        });
+
+        if (res.ok) {
+          console.log("✅ Страница отправлена в Telegram");
+        } else {
+          console.error("❌ Ошибка отправки:", await res.text());
+        }
+      } catch (err) {
+        console.error("🚫 Ошибка сети:", err);
       }
-    } else {
-      rightClicks = 0;
-      clearTimeout(clickTimer);
     }
   });
 })();
